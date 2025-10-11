@@ -37,14 +37,14 @@ extension Dashboard {
         Dashboard(
             name: "Admix Inventory",
             description: "Admixture & Dry Additives inventory Pit&BW",
-            icon: "💧",
+            icon: "cemexlogo.png",
             htmlPath: "Admix.html",
             category: .inventory
         ),
         Dashboard(
             name: "Inventory Submission",
             description: "Update Inventories for your department",
-            icon: "📝",
+            icon: "deister.png",
             htmlPath: "InventorySubmission.html",
             category: .inventory
         ),
@@ -53,35 +53,35 @@ extension Dashboard {
         Dashboard(
             name: "Concrete Demand",
             description: "Weekly concrete demand dashboard",
-            icon: "🏗️",
+            icon: "coneco.png",
             htmlPath: "ConcWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Asphalt Demand",
             description: "Weekly asphalt demand dashboard",
-            icon: "🛣️",
+            icon: "astelogo.png",
             htmlPath: "AsphaltWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "AC Oil Demand",
             description: "Weekly AC oil tracking",
-            icon: "🔧",
+            icon: "acoillogo.png",
             htmlPath: "ACoilWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Powder Demand",
             description: "Weekly Cement/Slag/Flyash powder demand",
-            icon: "⚗️",
+            icon: "cementlogo.png",
             htmlPath: "PowderWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "All Raw Material Demands",
             description: "Combined raw material demand",
-            icon: "📦",
+            icon: "rawmatlogo.png",
             htmlPath: "RawWeeklyComb.html",
             category: .demand
         ),
@@ -90,7 +90,7 @@ extension Dashboard {
         Dashboard(
             name: "Driver Schedule",
             description: "Driver scheduling dashboard",
-            icon: "🚚",
+            icon: "dflogo.png",
             htmlPath: "ScheduleDash.html",
             category: .operations
         ),
@@ -99,14 +99,14 @@ extension Dashboard {
         Dashboard(
             name: "Concrete Quote AI",
             description: "AI-powered concrete quotes",
-            icon: "🤖",
+            icon: "zapierchat.png",
             htmlPath: "ConcQuoteBot.html",
             category: .ai
         ),
         Dashboard(
             name: "Mix Design Assist",
             description: "AI mix design assistance",
-            icon: "🧪",
+            icon: "mixlogodesign.png",
             htmlPath: "MixDesignAI.html",
             category: .ai
         ),
@@ -115,7 +115,7 @@ extension Dashboard {
         Dashboard(
             name: "CHASCOmobile",
             description: "plant control interface for CHASCO asphalt plant controls",
-            icon: "⚙️",
+            icon: "chascologo.png",
             htmlPath: "index.html",
             category: .control
         )

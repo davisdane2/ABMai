@@ -69,9 +69,24 @@ struct DashboardCard: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            // Icon
-            Text(dashboard.icon)
-                .font(.system(size: 50))
+            // Icon - display image if it's a file, otherwise show as emoji
+            if dashboard.icon.hasSuffix(".png") || dashboard.icon.hasSuffix(".jpg") {
+                if let uiImage = loadImageFromBundle(named: dashboard.icon) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                } else {
+                    // Fallback if image not found
+                    Image(systemName: "app.fill")
+                        .font(.system(size: 50))
+                        .foregroundColor(.blue)
+                }
+            } else {
+                // Display emoji
+                Text(dashboard.icon)
+                    .font(.system(size: 50))
+            }
 
             // Name
             Text(dashboard.name)
@@ -93,6 +108,21 @@ struct DashboardCard: View {
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+
+    // Helper function to load image from bundle
+    private func loadImageFromBundle(named name: String) -> UIImage? {
+        // Remove extension to get the base name
+        let baseName = name.replacingOccurrences(of: ".png", with: "")
+            .replacingOccurrences(of: ".jpg", with: "")
+
+        // Try to load from bundle
+        if let path = Bundle.main.path(forResource: baseName, ofType: "png") {
+            return UIImage(contentsOfFile: path)
+        } else if let path = Bundle.main.path(forResource: baseName, ofType: "jpg") {
+            return UIImage(contentsOfFile: path)
+        }
+        return nil
     }
 }
 
