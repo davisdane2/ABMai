@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Raw Material Inventory</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f3f4f6;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const SUPABASE_URL = 'https://ntgxamggdtolnlevskjb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50Z3hhbWdnZHRvbG5sZXZza2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNTE3NDMsImV4cCI6MjA3NDgyNzc0M30.r18wk6hrD3Qr4PgoQXIqskDsJCKO9jvLQCHQDDtJQvI';
+
+        // Simple icon components
+        const AlertCircle = ({ size = 24, color = "currentColor" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        );
+
+        const CheckCircle = ({ size = 24, color = "currentColor" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        );
+
+        const Clock = ({ size = 24, color = "currentColor" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+        );
+
+        const RefreshCw = ({ size = 24, color = "currentColor", style }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style}>
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        );
+
+        const InventoryDashboard = () => {
+            const locations = {
+                pittsburg: {
+                    name: 'Pittsburg Pit',
+                    materials: [
+                        { id: 'pitt_concreteSand', name: 'Concrete Sand', unit: 'tons' },
+                        { id: 'pitt_1x4', name: '1 x 4 Crushed', unit: 'tons' },
+                        { id: 'pitt_peaGravel', name: 'Pea Gravel', unit: 'tons' },
+                        { id: 'pitt_dust', name: 'Dust', unit: 'tons' },
+                        { id: 'pitt_manSand', name: 'Manufactured Sand', unit: 'tons' },
+                        { id: 'pitt_agg38', name: '3/8"', unit: 'tons' },
+                        { id: 'pitt_agg12', name: '1/2"', unit: 'tons' },
+                        { id: 'pitt_agg34', name: '3/4"', unit: 'tons' }
+                    ]
+                },
+                brentwood: {
+                    name: 'Brentwood Pit',
+                    materials: [
+                        { id: 'brent_concreteSand', name: 'Concrete Sand', unit: 'tons' },
+                        { id: 'brent_1x4', name: '1 x 4 Crushed', unit: 'tons' },
+                        { id: 'brent_peaGravel', name: 'Pea Gravel', unit: 'tons' }
+                    ]
+                },
+                rapBase: {
+                    name: 'Back RAP/Base',
+                    materials: [
+                        { id: 'rap_total', name: 'Total RAP', unit: 'tons' },
+                        { id: 'base_total', name: 'Total Base', unit: 'tons' }
+                    ]
+                }
+            };
+
+            const [selectedLocation, setSelectedLocation] = useState('');
+            const [userName, setUserName] = useState('');
+            const [inventory, setInventory] = useState({});
+            const [loading, setLoading] = useState(true);
+            const [refreshing, setRefreshing] = useState(false);
+            const [saveTimers, setSaveTimers] = useState({});
+
+            const getTodayDate = () => {
+                const today = new Date();
+                return today.toISOString().split('T')[0];
+            };
+
+            const loadInventory = async () => {
+                try {
+                    const today = getTodayDate();
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/daily_inventory?entry_date=eq.${today}`,
+                        {
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            }
+                        }
+                    );
+
+                    if (!response.ok) throw new Error('Failed to load inventory');
+
+                    const data = await response.json();
+                    const inventoryMap = {};
+                    
+                    Object.values(locations).forEach(location => {
+                        location.materials.forEach(mat => {
+                            inventoryMap[mat.id] = { 
+                                value: '', 
+                                timestamp: null, 
+                                enteredBy: '', 
+                                location: '' 
+                            };
+                        });
+                    });
+
+                    if (data) {
+                        data.forEach(entry => {
+                            inventoryMap[entry.material_id] = {
+                                value: entry.value || '',
+                                timestamp: entry.timestamp,
+                                enteredBy: entry.entered_by || '',
+                                location: entry.location || ''
+                            };
+                        });
+                    }
+
+                    setInventory(inventoryMap);
+                    setLoading(false);
+                    setRefreshing(false);
+                } catch (error) {
+                    console.error('Error loading inventory:', error);
+                    alert('Error loading data from database. Please refresh the page.');
+                    setLoading(false);
+                    setRefreshing(false);
+                }
+            };
+
+            useEffect(() => {
+                loadInventory();
+            }, []);
+
+            const handleInputChange = async (materialId, materialName, locationName, value) => {
+                if (!userName || !selectedLocation) {
+                    alert('Please enter your name and select your location first!');
+                    return;
+                }
+
+                const numValue = value === '' ? '' : parseFloat(value);
+                if (value !== '' && (isNaN(numValue) || numValue < 0)) {
+                    return;
+                }
+
+                // Update local state immediately for responsive UI
+                const timestamp = value !== '' ? new Date().toISOString() : null;
+                setInventory(prev => ({
+                    ...prev,
+                    [materialId]: {
+                        value: value,
+                        timestamp: timestamp,
+                        enteredBy: value !== '' ? userName : '',
+                        location: value !== '' ? selectedLocation : ''
+                    }
+                }));
+
+                // Clear any existing timer for this material
+                if (saveTimers[materialId]) {
+                    clearTimeout(saveTimers[materialId]);
+                }
+
+                // Set a new timer to save after 1 second of no typing
+                if (value !== '') {
+                    const timerId = setTimeout(async () => {
+                        try {
+                            const today = getTodayDate();
+                            const payload = {
+                                material_id: materialId,
+                                material_name: materialName,
+                                location: locationName,
+                                value: parseFloat(value),
+                                timestamp: timestamp,
+                                entered_by: userName,
+                                entry_date: today
+                            };
+
+                            console.log('Saving to Supabase:', payload);
+
+                            const response = await fetch(
+                                `${SUPABASE_URL}/rest/v1/daily_inventory`,
+                                {
+                                    method: 'POST',
+                                    headers: {
+                                        'apikey': SUPABASE_ANON_KEY,
+                                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                        'Content-Type': 'application/json',
+                                        'Prefer': 'resolution=merge-duplicates,return=representation'
+                                    },
+                                    body: JSON.stringify(payload)
+                                }
+                            );
+
+                            const responseData = await response.text();
+                            console.log('Response status:', response.status);
+                            console.log('Response data:', responseData);
+
+                            if (!response.ok) {
+                                console.error('Error response:', responseData);
+                                throw new Error(`Failed to save: ${responseData}`);
+                            }
+                            
+                            console.log('Successfully saved to database');
+                        } catch (error) {
+                            console.error('Error saving to database:', error);
+                            alert(`Error saving data: ${error.message}. Check console for details.`);
+                        }
+                    }, 1000); // Wait 1 second after user stops typing
+
+                    setSaveTimers(prev => ({
+                        ...prev,
+                        [materialId]: timerId
+                    }));
+                }
+            };
+
+            // Save immediately when user leaves the field (onBlur)
+            const handleBlur = async (materialId, materialName, locationName) => {
+                // Clear the timer if it exists
+                if (saveTimers[materialId]) {
+                    clearTimeout(saveTimers[materialId]);
+                }
+
+                const entry = inventory[materialId];
+                if (!entry || entry.value === '' || !userName || !selectedLocation) {
+                    return;
+                }
+
+                try {
+                    const today = getTodayDate();
+                    const payload = {
+                        material_id: materialId,
+                        material_name: materialName,
+                        location: locationName,
+                        value: parseFloat(entry.value),
+                        timestamp: entry.timestamp,
+                        entered_by: userName,
+                        entry_date: today
+                    };
+
+                    console.log('Saving on blur:', payload);
+
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/daily_inventory`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'apikey': SUPABASE_ANON_KEY,
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                'Content-Type': 'application/json',
+                                'Prefer': 'resolution=merge-duplicates,return=representation'
+                            },
+                            body: JSON.stringify(payload)
+                        }
+                    );
+
+                    if (!response.ok) {
+                        const responseData = await response.text();
+                        console.error('Error response:', responseData);
+                        throw new Error(`Failed to save: ${responseData}`);
+                    }
+                    
+                    console.log('Successfully saved on blur');
+                } catch (error) {
+                    console.error('Error saving on blur:', error);
+                }
+            };
+
+            const formatTimestamp = (timestamp) => {
+                if (!timestamp) return 'Not entered';
+                const date = new Date(timestamp);
+                return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            };
+
+            const getCompletionStats = () => {
+                const locationStats = {};
+                Object.entries(locations).forEach(([key, location]) => {
+                    locationStats[location.name] = {
+                        entered: 0,
+                        total: location.materials.length,
+                        materials: location.materials.map(m => m.name).join(', ')
+                    };
+                });
+
+                Object.entries(locations).forEach(([key, location]) => {
+                    location.materials.forEach(mat => {
+                        const entry = inventory[mat.id];
+                        if (entry && entry.value !== '') {
+                            locationStats[location.name].entered += 1;
+                        }
+                    });
+                });
+
+                return locationStats;
+            };
+
+            const getTotalCompletion = () => {
+                const total = Object.values(locations).reduce((sum, loc) => sum + loc.materials.length, 0);
+                const completed = Object.values(inventory).filter(entry => entry && entry.value !== '').length;
+                return { completed, total, percentage: Math.round((completed / total) * 100) };
+            };
+
+            const renderTable = (locationKey) => {
+                const location = locations[locationKey];
+                
+                return (
+                    <div key={locationKey} style={{ background: 'white', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb', overflow: 'hidden', marginBottom: '30px' }}>
+                        <div style={{ background: '#f9fafb', padding: '20px', borderBottom: '2px solid #e5e7eb' }}>
+                            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>{location.name}</h2>
+                        </div>
+                        <div style={{ overflowX: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ background: '#f9fafb', borderBottom: '2px solid #e5e7eb' }}>
+                                        <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>Material</th>
+                                        <th style={{ padding: '16px', textAlign: 'center', fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>Current Inventory</th>
+                                        <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>Last Updated</th>
+                                        <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>Entered By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {location.materials.map((material, index) => {
+                                        const entry = inventory[material.id] || { value: '', timestamp: null, enteredBy: '', location: '' };
+                                        const hasValue = entry.value !== '';
+                                        
+                                        return (
+                                            <tr key={material.id} style={{ borderBottom: '1px solid #e5e7eb', background: index % 2 === 0 ? 'white' : '#f9fafb' }}>
+                                                <td style={{ padding: '16px', fontWeight: '500', color: '#1f2937' }}>
+                                                    {material.name}
+                                                </td>
+                                                <td style={{ padding: '16px', textAlign: 'center' }}>
+                                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                                        <input
+                                                            type="number"
+                                                            value={entry.value}
+                                                            onChange={(e) => handleInputChange(material.id, material.name, location.name, e.target.value)}
+                                                            onBlur={() => handleBlur(material.id, material.name, location.name)}
+                                                            placeholder="0.0"
+                                                            step="0.1"
+                                                            min="0"
+                                                            disabled={loading}
+                                                            style={{
+                                                                width: '120px',
+                                                                padding: '10px',
+                                                                border: `2px solid ${hasValue ? '#86efac' : '#e5e7eb'}`,
+                                                                borderRadius: '6px',
+                                                                fontSize: '16px',
+                                                                textAlign: 'right',
+                                                                background: hasValue ? '#f0fdf4' : 'white'
+                                                            }}
+                                                        />
+                                                        <span style={{ color: '#6b7280', fontSize: '14px' }}>{material.unit}</span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: '16px', color: hasValue ? '#059669' : '#9ca3af', fontSize: '14px' }}>
+                                                    {formatTimestamp(entry.timestamp)}
+                                                </td>
+                                                <td style={{ padding: '16px', color: '#374151', fontSize: '14px' }}>
+                                                    {entry.enteredBy || '-'}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
+            };
+
+            if (loading) {
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <RefreshCw size={48} color="#667eea" style={{ animation: 'spin 1s linear infinite' }} />
+                            <p style={{ marginTop: '20px', color: '#6b7280', fontSize: '18px' }}>Loading inventory data...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            const stats = getCompletionStats();
+            const totalStats = getTotalCompletion();
+
+            return (
+                <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                    <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '10px' }}>
+                            <h1 style={{ margin: '0', fontSize: '32px', fontWeight: 'bold' }}>Daily Raw Material Inventory</h1>
+                            <button
+                                onClick={() => { setRefreshing(true); loadInventory(); }}
+                                disabled={refreshing}
+                                style={{
+                                    background: 'rgba(255,255,255,0.2)',
+                                    border: '2px solid white',
+                                    color: 'white',
+                                    padding: '10px 20px',
+                                    borderRadius: '8px',
+                                    cursor: refreshing ? 'not-allowed' : 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '14px',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                <RefreshCw size={16} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
+                                {refreshing ? 'Refreshing...' : 'Refresh Data'}
+                            </button>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', fontSize: '16px', opacity: 0.95 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Clock size={20} />
+                                <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span>Overall Progress: {totalStats.completed}/{totalStats.total} ({totalStats.percentage}%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ background: 'white', padding: '25px', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '20px', fontSize: '20px', color: '#1f2937' }}>Enter Your Information</h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>Your Name</label>
+                                <input
+                                    type="text"
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                    placeholder="e.g., Daniels"
+                                    style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '16px', boxSizing: 'border-box' }}
+                                />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>Your Location</label>
+                                <select
+                                    value={selectedLocation}
+                                    onChange={(e) => setSelectedLocation(e.target.value)}
+                                    style={{ width: '100%', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', fontSize: '16px', boxSizing: 'border-box', background: 'white' }}
+                                >
+                                    <option value="">Select Location</option>
+                                    {Object.values(locations).map(location => (
+                                        <option key={location.name} value={location.name}>{location.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ background: 'white', padding: '25px', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb' }}>
+                        <h2 style={{ marginTop: 0, marginBottom: '20px', fontSize: '20px', color: '#1f2937' }}>Location Completion Status</h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '15px' }}>
+                            {Object.entries(stats).map(([locationName, data]) => {
+                                const percentage = Math.round((data.entered / data.total) * 100);
+                                const isComplete = percentage === 100;
+                                
+                                return (
+                                    <div key={locationName} style={{ padding: '15px', background: isComplete ? '#f0fdf4' : '#fef2f2', border: `2px solid ${isComplete ? '#86efac' : '#fecaca'}`, borderRadius: '8px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                            {isComplete ? <CheckCircle size={20} color="#16a34a" /> : <AlertCircle size={20} color="#dc2626" />}
+                                            <span style={{ fontWeight: '600', color: '#1f2937' }}>{locationName}</span>
+                                        </div>
+                                        <div style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px' }}>
+                                            Materials: {data.materials}
+                                        </div>
+                                        <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>
+                                            {data.entered} of {data.total} items ({percentage}%)
+                                        </div>
+                                        <div style={{ height: '6px', background: '#e5e7eb', borderRadius: '3px', overflow: 'hidden' }}>
+                                            <div style={{ height: '100%', width: `${percentage}%`, background: isComplete ? '#16a34a' : '#dc2626', transition: 'width 0.3s ease' }}></div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {renderTable('pittsburg')}
+                    {renderTable('brentwood')}
+                    {renderTable('rapBase')}
+
+                    <div style={{ marginTop: '30px', padding: '20px', background: '#dcfce7', border: '2px solid #86efac', borderRadius: '12px' }}>
+                        <h3 style={{ marginTop: 0, marginBottom: '10px', color: '#166534', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <CheckCircle size={20} color="#166534" />
+                            Connected to Database
+                        </h3>
+                        <ul style={{ margin: 0, paddingLeft: '25px', color: '#166534', lineHeight: '1.6' }}>
+                            <li>✅ Data is now shared across all users in real-time</li>
+                            <li>✅ All entries are saved to Supabase database</li>
+                            <li>✅ Data automatically resets daily (shows only today's entries)</li>
+                            <li>✅ Timestamps track when each material was last updated</li>
+                            <li>Click "Refresh Data" to see updates from other users</li>
+                        </ul>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<InventoryDashboard />);
+    </script>
+</body>
+</html>

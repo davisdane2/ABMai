@@ -1,0 +1,334 @@
+﻿
+/***************************
+****************************
+These are the styles for
+jquery dialog
+****************************
+***************************/
+.pwcAlarmMainDiv
+{
+    font-family: Tahoma;
+    font-size: 11px;
+}
+.pwcAlarmDialogBtn:hover, input[type="radio"]:hover
+{
+    background: #B0C4DE !important;
+    border-color: #0099CC !important;
+    border-width: 0.5px;
+}
+.pwcAlarmDialogBtn
+{
+    width: 66px;
+    height: 20px;
+    border: solid 1px #808080 !important;
+    font-family: Tahoma !important;
+    font-size: 11px !important;
+    border-radius: 0px !important;
+    background: none !important;
+    background-color: #D0D0D0 !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+/*
+.pwcAlarmDialogBtn, input[type="button"]
+{
+    margin-left: 9px !important;
+}*/
+.pwcAlarmDialogBtn:focus
+{
+    border-color: #0099CC !important;
+    outline: none !important;
+}
+/*
+input[type="button"]
+{
+    padding: 0px !important;
+    color: Black;
+}*/
+.pwcAlarmBasicBtn
+{
+    padding: 0px !important;
+    color: Black;
+    float: right;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+}
+/*.mainDiv
+{
+    border-width: 0px 5px 5px 5px !important;
+    border-radius: 0px !important;
+}*/
+
+/***************************
+****************************
+These are the styles for
+sort dialog layout 
+****************************
+***************************/
+.pwcAlarmSortFieldset, .pwcAlarmTimeBaseFieldset
+{
+    border: 1px solid rgba(121, 202, 240, 0.27) !important;
+    border-radius: 2px !important;
+    border-style: groove !important;
+}
+
+td-float-right
+{
+    text-align: left;
+}
+td-padding-left
+{
+    padding-left: 15px;
+}
+
+
+.pwcAlarmMainDiv input[type="radio"]
+/*#sortLevel1RadioBtn1,#sortLevel1RadioBtn2,#sortLevel2RadioBtn1,#sortLevel2RadioBtn2,#sortLevel3RadioBtn1,#sortLevel3RadioBtn2,#sortLevel4RadioBtn1*/
+{
+    margin-top: -1px;
+    vertical-align: middle;
+}
+
+.pwcAlarmSpecialBtn
+{
+    padding: 0px !important;
+    color: Black;
+    float: left;
+    width: 100px;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+}
+
+.pwcAlarmDefaultFocus
+{
+    border-color: #0099CC !important;
+    outline: none !important;
+}
+#sortLevel1 #sortLevel2 #sortLevel3 #sortLevel4:focus
+{
+    border-color: #0099CC !important;
+    outline: none !important;
+    display: block !important;
+}
+
+
+#sortLevel1,#sortLevel2,#sortLevel3,#sortLevel4
+{
+    font-family: Tahoma !important;
+    font-size: 11px !important;
+    text-indent: 0.01px;
+    float: left;
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+    margin-right: 5px;
+    display: block;
+    line-height: 14px;
+    margin: 0;
+}
+
+/***************************
+****************************
+These are the styles for
+Info dialog layout 
+****************************
+***************************/
+.pwcAlarmInfoMainDiv
+{
+    margin-top: 10px;
+    margin-left: 3px;
+    margin-right: 5px;
+}
+.pwcAlarmNo-resize
+{
+    resize: none;
+}
+.pwcAlarmAuto-scroll
+{
+    overflow-y: scroll;
+}
+/*
+infotextarea
+{
+    min-width: 260px;
+    min-height: 220px;
+}
+*/
+/***************************
+****************************
+These are the styles for
+Comment dialog layout 
+****************************
+***************************/
+
+.pwcAlarmlabels
+{
+    padding-right: 5px;
+float: right;
+}
+
+pwcAlarmComment-td-for-splLabel
+{
+    text-align: left;
+}
+
+.pwcAlarmReadonly-textbox
+{
+    background: #EDEDED !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: Black !important;
+    color: Black !important;
+    
+}
+.pwc-Alarm-min-width-for-textbox
+{
+    min-width: 265px;
+}
+.pwc-alarm-min-height-width-fortextarea
+{
+    min-width: 265px;
+    min-height: 200px;
+}
+
+#OKBtn {
+    padding-left: 5px;
+    margin-right: 5px;
+}
+
+.almfloatLeft
+{
+    float:left;
+}
+
+
+.almfloatLeft {
+    float: left;
+}
+
+#commentLabels {
+    top: 35px;
+    position: absolute;
+    height: 281px;
+    width: 550px;
+}
+
+#labels {
+    top: 4px;
+    width: 248px;
+    left: 18px;
+    position: absolute;
+    height: 252px;
+}
+
+#labelNumber {
+    position: relative;
+    left: -104px;
+    top: 10px;
+    width: 50px;
+}
+
+#inputNumber {
+    position: relative;
+    left: 29px;
+    top: -6px;
+    width: 249px;
+}
+
+
+#commentDate {
+    position: relative;
+    top: 19px;
+    left: -112px;
+    width: 50px;
+}
+
+#inputCommentDate {
+    position: relative;
+    width: 249px;
+    top: 3px;
+    left: 28px;
+}
+
+#commentTime {
+    position: relative;
+    top: 29px;
+    left: -110px;
+    width: 45px;
+}
+
+
+#inputCommentTime {
+    position: relative;
+    width: 249px;
+    top: 13px;
+    left: 27px;
+}
+
+#commentAuthor {
+    position: relative;
+    width: 45px;
+    top: 39px;
+    left: -106px;
+}
+
+#inputCommentAuthor {
+    position: relative;
+    width: 249px;
+    top: 23px;
+    left: 27px;
+}
+
+#commentComputer {
+    position: relative;
+    width: 50px;
+    top: 49px;
+    left: -100px;
+}
+
+#inputCommentComputer {
+    position: relative;
+    top: 33px;
+    left: 27px;
+    width: 249px;
+}
+
+#secondDiv {
+    position: absolute;
+    top: 0px;
+    left: 263px;
+    width: 286px;
+}
+
+#labelComment {
+    position: relative;
+    left: -12px;
+    top: 8px;
+}
+
+#textAreaComment {
+    position: relative;
+    top: 14px;
+    left: 0px;
+}
+
+#thirdDiv {
+    position: absolute;
+    top: 248px;
+    right: 3px;
+    width: 182px;
+}
+
+#commentOkBtn {
+    position: relative;
+    right: 66px;
+}
+
+#commentCancelBtn {
+    position: relative;
+    right: -66px;
+}
+
+.indentText {
+    text-indent: 4px;
+}
