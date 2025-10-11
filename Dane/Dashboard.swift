@@ -18,10 +18,10 @@ struct Dashboard: Identifiable {
 
 enum DashboardCategory: String, CaseIterable {
     case inventory = "Inventory"
-    case demand = "Weekly Demand"
-    case operations = "Operations"
-    case ai = "AI Tools"
-    case control = "Plant Control"
+    case demand = "ProductDemands"
+    case operations = "Schedule & DF"
+    case ai = "AI ChatBot Tools"
+    case control = "CHASCOmobile"
 }
 
 extension Dashboard {
@@ -29,60 +29,60 @@ extension Dashboard {
         // Inventory Dashboards
         Dashboard(
             name: "Chameleon Inventory",
-            description: "Pigment color inventory tracking",
+            description: "Pittsburg & Brentwood chameleon inventory",
             icon: "🦎",
-            htmlPath: "DashboardAssets/ChameleonInventory/chameleon.html",
+            htmlPath: "chameleon.html",
             category: .inventory
         ),
         Dashboard(
             name: "Admix Inventory",
-            description: "Admixture inventory status",
+            description: "Admixture & Dry Additives inventory Pit&BW",
             icon: "💧",
-            htmlPath: "DashboardAssets/AdmixInventory/Admix.html",
+            htmlPath: "Admix.html",
             category: .inventory
         ),
         Dashboard(
             name: "Inventory Submission",
-            description: "Submit inventory updates",
+            description: "Update Inventories for your department",
             icon: "📝",
-            htmlPath: "DashboardAssets/InventorySubmission/InventorySubmission.html",
+            htmlPath: "InventorySubmission.html",
             category: .inventory
         ),
 
         // Weekly Demand Dashboards
         Dashboard(
             name: "Concrete Demand",
-            description: "Weekly concrete demand analytics",
+            description: "Weekly concrete demand dashboard",
             icon: "🏗️",
-            htmlPath: "DashboardAssets/ConcreteDemandWeekly/ConcWeekly.html",
+            htmlPath: "ConcWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Asphalt Demand",
-            description: "Weekly asphalt demand analytics",
+            description: "Weekly asphalt demand dashboard",
             icon: "🛣️",
-            htmlPath: "DashboardAssets/AsphaltDemandWeekly/AsphaltWeekly.html",
+            htmlPath: "AsphaltWeekly.html",
             category: .demand
         ),
         Dashboard(
-            name: "A-Coil Demand",
-            description: "Weekly A-Coil tracking",
+            name: "AC Oil Demand",
+            description: "Weekly AC oil tracking",
             icon: "🔧",
-            htmlPath: "DashboardAssets/ACoilWeekly/ACoilWeekly.html",
+            htmlPath: "ACoilWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Powder Demand",
-            description: "Weekly powder demand",
+            description: "Weekly Cement/Slag/Flyash powder demand",
             icon: "⚗️",
-            htmlPath: "DashboardAssets/PowderWeekly/PowderWeekly.html",
+            htmlPath: "PowderWeekly.html",
             category: .demand
         ),
         Dashboard(
-            name: "Raw Materials",
+            name: "All Raw Material Demands",
             description: "Combined raw material demand",
             icon: "📦",
-            htmlPath: "DashboardAssets/RawMaterialDemandCombWeekly/RawWeeklyComb.html",
+            htmlPath: "RawWeeklyComb.html",
             category: .demand
         ),
 
@@ -91,7 +91,7 @@ extension Dashboard {
             name: "Driver Schedule",
             description: "Driver scheduling dashboard",
             icon: "🚚",
-            htmlPath: "DashboardAssets/ScheduleDashboard/ScheduleDash.html",
+            htmlPath: "ScheduleDash.html",
             category: .operations
         ),
 
@@ -100,23 +100,23 @@ extension Dashboard {
             name: "Concrete Quote AI",
             description: "AI-powered concrete quotes",
             icon: "🤖",
-            htmlPath: "DashboardAssets/ConcreteQuoteAI/ConcQuoteBot.html",
+            htmlPath: "ConcQuoteBot.html",
             category: .ai
         ),
         Dashboard(
             name: "Mix Design Assist",
             description: "AI mix design assistance",
             icon: "🧪",
-            htmlPath: "DashboardAssets/MixDesignAssistAI/MixDesignAI.html",
+            htmlPath: "MixDesignAI.html",
             category: .ai
         ),
 
         // Plant Control
         Dashboard(
-            name: "CHASCO Mobile",
-            description: "SCADA plant control interface",
+            name: "CHASCOmobile",
+            description: "plant control interface for CHASCO asphalt plant controls",
             icon: "⚙️",
-            htmlPath: "DashboardAssets/CHASCOmobile/index.html",
+            htmlPath: "index.html",
             category: .control
         )
     ]

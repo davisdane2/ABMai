@@ -16,7 +16,7 @@ struct ContentView: View {
                 VStack(spacing: 20) {
                     // Header
                     VStack(spacing: 8) {
-                        Text("ABMai")
+                        Text("ABM.ai")
                             .font(.system(size: 48, weight: .bold))
                             .foregroundStyle(
                                 LinearGradient(
@@ -26,7 +26,7 @@ struct ContentView: View {
                                 )
                             )
 
-                        Text("Operational Dashboards")
+                        Text("dashboards")
                             .font(.title3)
                             .foregroundColor(.secondary)
                     }
