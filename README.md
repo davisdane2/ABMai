@@ -8,13 +8,13 @@
 
 ---
 
-## 🚀 Features
+## Main Features
 
 ### 📊 Real-Time Dashboards
 
-Access 13 live operational dashboards organized by category:
+Access 10 live operational dashboards and 3 WIP dashboards organized by category:
 
-#### 🏭 **Inventory Management**
+#### **Inventory Management**
 - **Chameleon Inventory** - Real-time pigment tracking for Pittsburg & Brentwood plants
   - Monitor A1010, A1070, A550, A875, A8090 levels
   - Track incoming orders and delivery schedules
@@ -32,7 +32,7 @@ Access 13 live operational dashboards organized by category:
 - **Powder Demand** - Cement, slag, and flyash monitoring
 - **Raw Materials** - Combined material demand overview
 
-#### 🚚 **Operations & Scheduling**
+####**Operations & Scheduling**
 - **Driver Schedule** - Real-time driver scheduling dashboard
   - Organized by work point
   - Truck assignments
@@ -47,11 +47,11 @@ Access 13 live operational dashboards organized by category:
 
 ![CHASCOmobile SCADA Interface](Dane/readmeasset/screenshotchascomobile.png)
 
-> **Coming Soon:** CHASCOmobile will provide full SCADA control and monitoring of the CHASCO asphalt plant directly from your iOS device. Real-time temperature monitoring, batch controls, and production metrics—all at your fingertips.
+> **Coming Soon:** CHASCOmobile can provide full control and monitoring of the CHASCO asphalt plant directly from your iOS device. Real-time temperature monitoring, batch controls, and production metrics.
 
 ---
 
-## 🛠️ Technical Stack
+##  Technical Stack
 
 ### Frontend
 - **SwiftUI** - Modern iOS native interface
@@ -68,92 +68,57 @@ Access 13 live operational dashboards organized by category:
 - **Tailwind CSS** - Responsive styling
 - **HTML5/JavaScript** - Web-based visualizations
 
-### Data Sources
-Database tables:
-- `chameleon_inventory` & `chameleon_incoming_orders`
-- `admix_inventory` & `admix_incoming_orders`
-- `driver_schedules`
-- Weekly demand tracking tables
-
 ---
 
 ## 📱 Platform Support
 
 - **iOS 17.0+** - iPhone & iPad
 - **macOS 14.0+** (coming soon)
+- Android Support (coming soon)
+- Native Web App (Coming Soon)
 
 ---
 
 ## 🎯 Current Status
 
 **Version:** 1.0 Beta
-**Build Status:** ✅ Successfully builds for iOS Simulator
-**Release Target:** TestFlight Beta (iOS & macOS)
+**Release Target:** TestFlight edition (iOS & macOS)
 
 ---
 
 ## 🔮 Roadmap
 
-### Phase 1 (Current - WKWebView Prototype) ✅
+### Phase 1 (Current - Prototype) ✅
 - [x] Dashboard selector interface
-- [x] WKWebView integration for all 13 dashboards
-- [x] Custom logo branding
+- [x] WKWebView integration for all dashboards
 - [x] Category-based navigation
-- [x] Supabase connectivity
+- [x] Supabase connectivity for rapid data availability from selected data sources.
 
 ### Phase 2 (Native Migration)
-- [ ] Migrate high-priority dashboards to native SwiftUI
-- [ ] Integrate Supabase Swift SDK for direct database access
-- [ ] Real-time subscriptions (replace polling)
-- [ ] Offline capability with local caching
-- [ ] Native authentication
+- [ ] Migrate high-priority dashboards to native SwiftUI for a cleaner look
+- [ ] Integrate Supabase Swift SDK for direct database access when running app.
+- [ ] Real-time subscriptions to data should it change while viewing.
+- [ ] Offline capability with local caching so the captured dashboard stays with out
+- [ ] Native authentication to data services
+- [ ] iPad Support
 
 ### Phase 3 (CHASCOmobile Integration)
 - [ ] Live SCADA data integration
-- [ ] Plant control commands
+- [ ] Plant control commands customized as needed
 - [ ] Real-time alerts and monitoring
-- [ ] Production metrics dashboard
+- [ ] Ability to make changes from anywhere
+- [ ] Secure native VPN access to CHASCO through the app
 
 ### Phase 4 (Advanced Features)
-- [ ] Push notifications for inventory alerts
-- [ ] Multi-user collaboration
-- [ ] Custom dashboard builder
+- [ ] Push notifications for inventory alerts and delivery updates
+- [ ] Multi-user collaboration allowing updating certain data points in app
 - [ ] Export reports (PDF/Excel)
-- [ ] Apple Watch companion app
+- [ ] Email dashboard PDFs through email to share
+- [ ] Manager level authentication for Financial Insight Dashboards
 
 ---
 
-## 🏗️ Building the App
-
-### Prerequisites
-- Xcode 16.0+
-- iOS 17.0+ SDK
-- macOS Ventura or later
-
-### Build Instructions
-
-```bash
-# Clone the repository
-git clone https://github.com/davisdane2/ABMai.git
-cd ABMai
-
-# Open in Xcode
-open Dane.xcodeproj
-
-# Select target device (iPhone or Simulator)
-# Press Cmd+R to build and run
-```
-
-### Run in Simulator
-```bash
-xcodebuild -project Dane.xcodeproj -scheme Dane \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro Max' \
-  build
-```
-
----
-
-## 📦 Project Structure
+## 📦 Project Navigation Structure
 
 ```
 Dane/
@@ -182,50 +147,29 @@ Dane/
 ## 🔐 Database Configuration
 
 The app connects to a Supabase PostgreSQL database:
-- **URL:** `https://ntgxamggdtolnlevskjb.supabase.co`
 - **Authentication:** Anonymous key (public read access)
 
 > **Security Note:** Production builds will implement Row Level Security (RLS) and proper authentication.
 
 ---
 
-## 🤝 Contributing
-
-This is a private enterprise application. For internal contributors:
-
-1. Create a feature branch
-2. Make your changes
-3. Test thoroughly in simulator
-4. Submit PR for review
-
----
-
-## 📄 License
-
-Proprietary - All Rights Reserved
-
----
+This is a private enterprise application. Intended for onsite access by ABM employees
 
 ## 📞 Support
 
 For issues or questions:
-- Internal: Contact Dane Davis
+- Internal: dane@antiochbuilding.com
 - GitHub: https://github.com/davisdane2/ABMai/issues
 
 ---
 
-## 🎨 Branding
-
 Dashboard logos and icons are proprietary to:
-- CEMEX
+- CEMEX LLC
 - Deister Machine Co.
-- ASTE (American Standard Testing & Engineering)
-- CHASCO
-- And partner organizations
+- ASTEC (American Standard Testing & Engineering)
+- CHASCO Automation
 
 ---
-
-## 🙏 Acknowledgments
 
 Built with:
 - **SwiftUI** by Apple
@@ -234,5 +178,3 @@ Built with:
 - **React** & **Tailwind CSS** for dashboard UIs
 
 ---
-
-**ABM.ai** - *Bringing operational excellence to your fingertips* 📱✨
