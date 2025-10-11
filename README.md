@@ -8,6 +8,84 @@
 
 ---
 
+## 📲 How to Install ABM.ai on Your iPhone
+
+**New to TestFlight?** No problem! Follow these simple steps to get ABM.ai on your iPhone:
+
+### Step 1: Check Your Email 📧
+
+You'll receive an email invitation from **Dane Davis via TestFlight** with the subject line similar to "Join the ABM.ai beta test."
+
+![Email Invitation](Dane/InstallInstructions/1%20-%20receivedemail%20to%20go%20and%20redeem%20invite%20code.png)
+
+**Important:** Look for your **unique invitation code** in the email. It's easy to miss!
+
+![Invitation Code Location](Dane/InstallInstructions/1.5%20-%20code%20easy%20to%20miss.png)
+
+### Step 2: Download TestFlight 📱
+
+Before you can install ABM.ai, you need the **TestFlight app** (it's free from Apple).
+
+**Two ways to get it:**
+
+**Option A:** Tap the link in your invitation email
+
+**Option B:** [Download TestFlight from the App Store](https://apps.apple.com/us/app/testflight/id899247664)
+
+> TestFlight is Apple's official app for testing beta software. It's safe and trusted by millions of developers.
+
+### Step 3: Redeem Your Invitation Code 🎟️
+
+1. **Open the TestFlight app** on your iPhone
+2. **Sign in** with your Apple ID (the same one you use for the App Store)
+3. Tap **"Redeem"** in the top right corner
+4. **Enter your invitation code** from the email
+5. Tap **"Redeem"** to activate
+
+![Redeem Code in TestFlight](Dane/InstallInstructions/3%20-%20login%20apple%20id%20and%20activate%20dev%20to%20redeem%20code%20in%20TestFlight.png)
+
+### Step 4: Install ABM.ai ✅
+
+After redeeming your code, **ABM.ai** will appear in your TestFlight app.
+
+![ABM.ai in TestFlight](Dane/InstallInstructions/4%20-%20app%20will%20show%20up%20in%20TestFlight.png)
+
+1. Tap **"Install"** next to ABM.ai
+2. Wait for the download to complete (usually takes 30-60 seconds)
+3. Once installed, tap **"Open"** to launch the app
+
+### Step 5: Find ABM.ai on Your Home Screen 🏠
+
+After installation, **ABM.ai** appears on your iPhone home screen just like any other app!
+
+![ABM.ai Working](Dane/InstallInstructions/5%20-%20app%20shows%20up%20and%20works%20like%20real%20app%20and%20auto%20updates.png)
+
+**Bonus:** The app will **automatically update** whenever we release new features or fixes. You'll get a notification in TestFlight when updates are available.
+
+---
+
+### ❓ Troubleshooting
+
+**Can't find the invitation email?**
+- Check your spam/junk folder
+- Make sure the email was sent to the correct address
+- Contact Dane Davis for a new invitation
+
+**"Code Already Redeemed" error?**
+- You may have already redeemed it! Check if ABM.ai is already in your TestFlight app
+- If not, request a new code from Dane
+
+**TestFlight won't open the app?**
+- Make sure you're using **iOS 17.0 or newer**
+- Try restarting your iPhone
+- Delete and reinstall from TestFlight
+
+**Need help?**
+- Email: dane@antiochbuilding.com
+- The TestFlight invitation includes a feedback button to report issues directly
+
+---
+
 ## Main Features
 
 ### 📊 Real-Time Dashboards
