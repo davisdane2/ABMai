@@ -1,34 +1,55 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chameleon Daily Report</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-const ChameleonReport = () => {
-  const [plantData, setPlantData] = useState(null);
-  const [incomingOrders, setIncomingOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showOrderModal, setShowOrderModal] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState('Brentwood');
-  const [formData, setFormData] = useState({
-    a1010: '',
-    a1070: '',
-    a550: '',
-    a875: '',
-    a8090: '',
-    didRinse: false,
-    userName: ''
-  });
-  const [orderFormData, setOrderFormData] = useState({
-    plantName: 'Brentwood',
-    colorType: 'A1010',
-    numberOfTotes: '',
-    estimatedDeliveryDate: '',
-    notes: '',
-    enteredBy: ''
-  });
-  const [submitting, setSubmitting] = useState(false);
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  const SUPABASE_URL = 'https://ntgxamggdtolnlevskjb.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50Z3hhbWdnZHRvbG5sZXZza2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNTE3NDMsImV4cCI6MjA3NDgyNzc0M30.r18wk6hrD3Qr4PgoQXIqskDsJCKO9jvLQCHQDDtJQvI';
+        const ChameleonReport = () => {
+          const [plantData, setPlantData] = useState(null);
+          const [incomingOrders, setIncomingOrders] = useState([]);
+          const [loading, setLoading] = useState(true);
+          const [lastUpdate, setLastUpdate] = useState(null);
+          const [showUpdateModal, setShowUpdateModal] = useState(false);
+          const [showOrderModal, setShowOrderModal] = useState(false);
+          const [selectedPlant, setSelectedPlant] = useState('Brentwood');
+          const [formData, setFormData] = useState({
+            a1010: '',
+            a1070: '',
+            a550: '',
+            a875: '',
+            a8090: '',
+            didRinse: false,
+            userName: ''
+          });
+          const [orderFormData, setOrderFormData] = useState({
+            plantName: 'Brentwood',
+            colorType: 'A1010',
+            numberOfTotes: '',
+            estimatedDeliveryDate: '',
+            notes: '',
+            enteredBy: ''
+          });
+          const [submitting, setSubmitting] = useState(false);
+
+          const SUPABASE_URL = 'https://ntgxamggdtolnlevskjb.supabase.co';
+          const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50Z3hhbWdnZHRvbG5sZXZza2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNTE3NDMsImV4cCI6MjA3NDgyNzc0M30.r18wk6hrD3Qr4PgoQXIqskDsJCKO9jvLQCHQDDtJQvI';
 
   const fetchData = async () => {
     try {
@@ -670,4 +691,8 @@ const ChameleonReport = () => {
   );
 };
 
-export default ChameleonReport;
+        // Render the component
+        ReactDOM.render(<ChameleonReport />, document.getElementById('root'));
+    </script>
+</body>
+</html>

@@ -7,23 +7,23 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
+            padding: 10px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             min-height: 100vh;
         }
         .container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            padding: 30px;
+            padding: 15px;
         }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 28px;
+            margin-bottom: 20px;
+            font-size: 20px;
         }
         .material-section {
             margin-bottom: 50px;
@@ -31,9 +31,9 @@
         .section-title {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px 8px 0 0;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             text-align: center;
             margin-bottom: 0;
@@ -42,13 +42,13 @@
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         }
         .plant-subsection {
-            margin-top: 30px;
+            margin-top: 20px;
         }
         .plant-header {
             background: #f8f9fa;
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-left: 4px solid #764ba2;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #495057;
             margin-bottom: 10px;
@@ -56,33 +56,48 @@
         .plant-header.asphalt {
             border-left-color: #2a5298;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        
+        /* Mobile-first responsive table */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             margin-bottom: 20px;
         }
+        
+        table {
+            width: 100%;
+            min-width: 600px; /* Minimum width to prevent cramping */
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        
         th {
             background: #f8f9fa;
-            padding: 12px;
+            padding: 8px 6px;
             text-align: center;
             font-weight: 600;
             color: #495057;
             border: 1px solid #dee2e6;
+            font-size: 12px;
+            white-space: nowrap;
         }
         th:first-child {
             text-align: left;
-            width: 200px;
+            width: 120px;
+            min-width: 120px;
         }
         td {
-            padding: 10px;
+            padding: 8px 6px;
             text-align: center;
             border: 1px solid #dee2e6;
+            font-size: 13px;
         }
         td:first-child {
             text-align: left;
             font-weight: 500;
             background: #f8f9fa;
+            font-size: 12px;
         }
         .total-row {
             background: #e3f2fd;
@@ -121,17 +136,18 @@
             <!-- BRENTWOOD -->
             <div class="plant-subsection">
                 <div class="plant-header">BRENTWOOD PLANT</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Raw Material</th>
-                            <th>Sun 9/29</th>
-                            <th>Mon 9/30</th>
-                            <th>Tue 10/1</th>
-                            <th>Wed 10/2</th>
-                            <th>Thu 10/3</th>
-                        </tr>
-                    </thead>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Raw Material</th>
+                                <th>9/29</th>
+                                <th>9/30</th>
+                                <th>10/1</th>
+                                <th>10/2</th>
+                                <th>10/3</th>
+                            </tr>
+                        </thead>
                     <tbody>
                         <tr>
                             <td>Concrete Sand <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
@@ -166,23 +182,25 @@
                             <td class='qty-cell'><strong>63.6</strong></td>
                         </tr>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
             
             <!-- PITTSBURG -->
             <div class="plant-subsection">
                 <div class="plant-header">PITTSBURG PLANT</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Raw Material</th>
-                            <th>Sun 9/29</th>
-                            <th>Mon 9/30</th>
-                            <th>Tue 10/1</th>
-                            <th>Wed 10/2</th>
-                            <th>Thu 10/3</th>
-                        </tr>
-                    </thead>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Raw Material</th>
+                                <th>9/29</th>
+                                <th>9/30</th>
+                                <th>10/1</th>
+                                <th>10/2</th>
+                                <th>10/3</th>
+                            </tr>
+                        </thead>
                     <tbody>
                         <tr>
                             <td>Concrete Sand <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
@@ -217,7 +235,8 @@
                             <td class='qty-cell'><strong>180.6</strong></td>
                         </tr>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
         
@@ -227,17 +246,18 @@
             
             <div class="plant-subsection">
                 <div class="plant-header asphalt">ASPHALT PLANT</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Raw Material</th>
-                            <th>Sun 9/29</th>
-                            <th>Mon 9/30</th>
-                            <th>Tue 10/1</th>
-                            <th>Wed 10/2</th>
-                            <th>Thu 10/3</th>
-                        </tr>
-                    </thead>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Raw Material</th>
+                                <th>9/29</th>
+                                <th>9/30</th>
+                                <th>10/1</th>
+                                <th>10/2</th>
+                                <th>10/3</th>
+                            </tr>
+                        </thead>
                     <tbody>
                         <tr>
                             <td>Dust <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
@@ -288,7 +308,8 @@
                             <td class='qty-cell'><strong>857.9</strong></td>
                         </tr>
                     </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
         

@@ -1,6 +1,27 @@
-import React from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powder Weekly - Cement Demand Dashboard</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-export default function CementDemandDashboard() {
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function CementDemandDashboard() {
   // Data calculated from concrete mix formulas and product demand
   const data = {
     'BRENTWOOD': [
@@ -151,3 +172,9 @@ export default function CementDemandDashboard() {
     </div>
   );
 }
+
+        // Render the component
+        ReactDOM.render(<CementDemandDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>
