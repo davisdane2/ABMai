@@ -88,6 +88,12 @@ After installation, **ABM.ai** appears on your iPhone home screen just like any 
 
 ## Main Features
 
+### 🎨 **Glassmorphic Design Interface**
+- **Modern UI**: Beautiful glassmorphic design with frosted glass effects
+- **Enhanced Readability**: High-contrast white text on glass backgrounds
+- **Smooth Animations**: Spring-based interactions and floating elements
+- **Premium Feel**: Professional gradient backgrounds and glassmorphic cards
+
 ### 📊 Real-Time Dashboards
 
 Access 10 live operational dashboards and 3 WIP dashboards organized by category:
@@ -117,8 +123,15 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
   - Start times and notes
 
 #### 🤖 **AI-Powered Tools**
-- **Concrete Quote AI** - Instant AI-generated concrete quotes
+- **Concrete Quote AI** - Instant AI-generated concrete quotes with smart pricing algorithms
+  - Form-based interface with project details, concrete types, and special requirements
+  - Real-time quote calculations with volume discounts and delivery fees
+  - Professional quote display with all project specifications
 - **Mix Design Assist** - AI-powered mix design recommendations
+  - Advanced mix design calculator with strength optimization
+  - Water-cement ratio calculations based on exposure conditions
+  - Material proportions and quality control recommendations
+  - Professional mix design reports with industry standards
 
 #### ⚙️ **Plant Control**
 - **CHASCOmobile** - SCADA plant control interface *(Preview)*
@@ -170,7 +183,9 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 - [x] Dashboard selector interface
 - [x] WKWebView integration for all dashboards
 - [x] Category-based navigation
-- [x] Supabase connectivity for rapid data availability from selected data sources.
+- [x] Supabase connectivity for rapid data availability from selected data sources
+- [x] **Glassmorphic UI Design** - Modern frosted glass interface with enhanced readability
+- [x] **AI Tools Redesign** - Local, self-contained AI tools with professional interfaces
 
 ### Phase 2 (Native Migration)
 - [ ] Migrate high-priority dashboards to native SwiftUI for a cleaner look
