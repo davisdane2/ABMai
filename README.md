@@ -2,7 +2,7 @@
 
 > Real-time operational intelligence for asphalt, concrete, and materials management
 
-**ABM.ai** is a native iOS application that brings your entire operations ecosystem to your mobile device. Access live inventory levels, demand forecasts, driver schedules, AI-powered tools, and plant control systems—all from one beautifully designed interface.
+**ABM.ai** is a native iOS application that brings your entire operations ecosystem to your mobile device. Access live inventory levels, demand forecasts, driver schedules, AI-powered tools, and plant control systems—all from one interface.
 
 ![ABM.ai App Screenshot](Dane/readmeasset/screenshotgeneral.png)
 
@@ -69,27 +69,21 @@ After installation, **ABM.ai** appears on your iPhone home screen just like any 
 **Can't find the invitation email?**
 - Check your spam/junk folder
 - Make sure the email was sent to the correct address
-- Contact Dane Davis for a new invitation
+- Contact Dane for a new invitation
 
 **"Code Already Redeemed" error?**
 - You may have already redeemed it! Check if ABM.ai is already in your TestFlight app
 - If not, request a new code from Dane
-
-**TestFlight won't open the app?**
-- Make sure you're using **iOS 17.0 or newer**
-- Try restarting your iPhone
-- Delete and reinstall from TestFlight
-
+  
 **Need help?**
 - Email: dane@antiochbuilding.com
-- The TestFlight invitation includes a feedback button to report issues directly
 
 ---
 
 ## Main Features
 
 ### 🎨 **Glassmorphic Design Interface**
-- **Modern UI**: Beautiful glassmorphic design with frosted glass effects
+- **Modern UI**: glassmorphic design with frosted glass effects
 - **Enhanced Readability**: High-contrast white text on glass backgrounds
 - **Smooth Animations**: Spring-based interactions and floating elements
 - **Premium Feel**: Professional gradient backgrounds and glassmorphic cards
@@ -134,7 +128,7 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
   - Professional mix design reports with industry standards
 
 #### ⚙️ **Plant Control**
-- **CHASCOmobile** - SCADA plant control interface with VPN integration
+- **CHASCOmobile** - plant control interface with VPN integration
 
 ![CHASCOmobile VPN Connection](chascomobilevpn.png)
 
@@ -148,37 +142,11 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 > **Security Note:** Requires active VPN connection to access live plant controls. The app validates connection requirements before opening the external CHASCO interface.
 
 ---
-
-##  Technical Stack
-
-### Frontend
-- **SwiftUI** - Modern iOS native interface
-- **WKWebView** - Hybrid web content rendering
-- **UIKit** - iOS framework integration
-
-### Backend & Data
-- **Supabase** - PostgreSQL database with real-time subscriptions
-- **REST API** - Direct database queries
-- **Auto-refresh** - 30-90 second polling intervals
-
-### Dashboard Technologies
-- **React** - Interactive dashboard components
-- **Tailwind CSS** - Responsive styling
-- **HTML5/JavaScript** - Web-based visualizations
-
----
-
 ## 📱 Platform Support
-
 - **iOS 17.0+** - iPhone & iPad
-- **macOS 14.0+** (coming soon)
-- Android Support (coming soon)
-- Native Web App (Coming Soon)
-
+- (coming soon) Android Support 
 ---
-
 ## 🎯 Current Status
-
 **Version:** 1.4 Beta
 **Release Target:** TestFlight edition (iOS & macOS)
 
@@ -187,11 +155,7 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 - ✅ **Enhanced WebView Navigation** - Back/forward/reload controls for dashboard navigation
 - ✅ **Safety Warnings** - VPN connection validation before accessing plant controls
 - ✅ **Safari Integration** - External browser support for secure plant connections
-
 ---
-
-## 🔮 Roadmap
-
 ### Phase 1 (Current - Prototype) ✅
 - [x] Dashboard selector interface
 - [x] WKWebView integration for all dashboards
@@ -206,83 +170,32 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 - [ ] Real-time subscriptions to data should it change while viewing.
 - [ ] Offline capability with local caching so the captured dashboard stays with out
 - [ ] Native authentication to data services
-- [ ] iPad Support
 
-### Phase 3 (CHASCOmobile Integration) 🚧 In Progress
+### Phase 3 (CHASCOmobile Integration)
 - [x] Secure VPN connection workflow (v1.4)
 - [x] Safety validation and warning system (v1.4)
 - [x] Safari integration for plant access (v1.4)
-- [ ] Live SCADA data integration
-- [ ] Plant control commands customized as needed
-- [ ] Real-time alerts and monitoring
-- [ ] Ability to make changes from anywhere
 
 ### Phase 4 (Advanced Features)
 - [ ] Push notifications for inventory alerts and delivery updates
-- [ ] Multi-user collaboration allowing updating certain data points in app
 - [ ] Export reports (PDF/Excel)
 - [ ] Email dashboard PDFs through email to share
 - [ ] Manager level authentication for Financial Insight Dashboards
 
----
-
-## 📦 Project Navigation Structure
-
-```
-Dane/
-├── Dashboard.swift           # Dashboard models and data
-├── DashboardWebView.swift    # WKWebView wrapper
-├── ContentView.swift         # Main UI
-├── DaneApp.swift            # App entry point
-├── DashboardAssets/         # HTML dashboards
-│   ├── ChameleonInventory/
-│   ├── AdmixInventory/
-│   ├── ConcreteDemandWeekly/
-│   ├── AsphaltDemandWeekly/
-│   ├── ACoilWeekly/
-│   ├── PowderWeekly/
-│   ├── RawMaterialDemandCombWeekly/
-│   ├── ScheduleDashboard/
-│   ├── InventorySubmission/
-│   ├── ConcreteQuoteAI/
-│   ├── MixDesignAssistAI/
-│   └── CHASCOmobile/
-└── DashboardAssets/Dashboardlogos/  # Brand logos
-```
-
----
-
-## 🔐 Database Configuration
-
+## 🔐
 The app connects to a Supabase PostgreSQL database:
 - **Authentication:** Anonymous key (public read access)
-
 > **Security Note:** Production builds will implement Row Level Security (RLS) and proper authentication.
-
 ---
-
 This is a private enterprise application. Intended for onsite access by ABM employees
-
-## 📞 Support
-
 For issues or questions:
-- Internal: dane@antiochbuilding.com
-- GitHub: https://github.com/davisdane2/ABMai/issues
-
+- dane@antiochbuilding.com - GitHub: https://github.com/davisdane2/ABMai/issues
 ---
-
 Dashboard logos and icons are proprietary to:
-- CEMEX LLC
-- Deister Machine Co.
-- ASTEC (American Standard Testing & Engineering)
-- CHASCO Automation
-
----
-
+- CEMEX LLC - Deister Machine Co. - ASTEC (American Standard Testing & Engineering) - CHASCO Automation
 Built with:
 - **SwiftUI** by Apple
 - **Supabase** for backend infrastructure
 - **Claude Code** for AI-assisted development
 - **React** & **Tailwind CSS** for dashboard UIs
-
 ---
