@@ -134,11 +134,18 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
   - Professional mix design reports with industry standards
 
 #### ⚙️ **Plant Control**
-- **CHASCOmobile** - SCADA plant control interface *(Preview)*
+- **CHASCOmobile** - SCADA plant control interface with VPN integration
 
-![CHASCOmobile SCADA Interface](Dane/readmeasset/screenshotchascomobile.png)
+![CHASCOmobile VPN Connection](chascomobilevpn.png)
 
-> **Coming Soon:** CHASCOmobile can provide full control and monitoring of the CHASCO asphalt plant directly from your iOS device. Real-time temperature monitoring, batch controls, and production metrics.
+**NEW in v1.4:** Secure VPN connection to live CHASCO plant controls
+- Click the VPN activation button to connect to your plant's SCADA system
+- Safety warning modal ensures VPN is active before connecting
+- Opens in Safari for reliable connection to `10.52.10.100`
+- Real-time access to plant temperature monitoring, batch controls, and production metrics
+- Navigate back and forth between app and plant controls seamlessly
+
+> **Security Note:** Requires active VPN connection to access live plant controls. The app validates connection requirements before opening the external CHASCO interface.
 
 ---
 
@@ -172,8 +179,14 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 
 ## 🎯 Current Status
 
-**Version:** 1.0 Beta
+**Version:** 1.4 Beta
 **Release Target:** TestFlight edition (iOS & macOS)
+
+### Recent Updates (v1.4)
+- ✅ **CHASCOmobile VPN Integration** - Secure connection to live plant SCADA controls
+- ✅ **Enhanced WebView Navigation** - Back/forward/reload controls for dashboard navigation
+- ✅ **Safety Warnings** - VPN connection validation before accessing plant controls
+- ✅ **Safari Integration** - External browser support for secure plant connections
 
 ---
 
@@ -195,12 +208,14 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 - [ ] Native authentication to data services
 - [ ] iPad Support
 
-### Phase 3 (CHASCOmobile Integration)
+### Phase 3 (CHASCOmobile Integration) 🚧 In Progress
+- [x] Secure VPN connection workflow (v1.4)
+- [x] Safety validation and warning system (v1.4)
+- [x] Safari integration for plant access (v1.4)
 - [ ] Live SCADA data integration
 - [ ] Plant control commands customized as needed
 - [ ] Real-time alerts and monitoring
 - [ ] Ability to make changes from anywhere
-- [ ] Secure native VPN access to CHASCO through the app
 
 ### Phase 4 (Advanced Features)
 - [ ] Push notifications for inventory alerts and delivery updates
