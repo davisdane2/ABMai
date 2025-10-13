@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedCategory: DashboardCategory = .inventory
     @State private var showToast = false
     @State private var toastMessage = ""
 
@@ -26,7 +25,7 @@ struct ContentView: View {
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
-                
+
                 // Animated background elements
                 ForEach(0..<3, id: \.self) { index in
                     Circle()
@@ -52,9 +51,9 @@ struct ContentView: View {
                             value: UUID()
                         )
                 }
-                
-                ScrollView {
-                    VStack(spacing: 30) {
+
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(alignment: .leading, spacing: Constants.standardPadding) {
                         // Glassmorphic Header
                         VStack(spacing: 12) {
                             Text("ABM.ai")
@@ -73,45 +72,22 @@ struct ContentView: View {
                                 .fontWeight(.medium)
                                 .foregroundColor(.white.opacity(0.9))
                         }
+                        .frame(maxWidth: .infinity)
                         .padding(.top, 40)
                         .padding(.bottom, 20)
 
-                        // Glassmorphic Category Picker
-                        GlassmorphicCard {
-                            VStack(spacing: 16) {
-                                Text("Select Category")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .fontWeight(.semibold)
-                                
-                                Picker("Category", selection: $selectedCategory) {
-                                    ForEach(DashboardCategory.allCases, id: \.self) { category in
-                                        Text(category.rawValue).tag(category)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .background(Color.white.opacity(0.1))
-                                .cornerRadius(12)
-                            }
-                            .padding(20)
-                        }
-                        .padding(.horizontal, 20)
+                        // Dashboard categories with horizontal scrolling (Apple pattern)
+                        ForEach(DashboardCategory.allCases, id: \.self) { category in
+                            Group {
+                                CategoryTitleView(title: category.rawValue)
 
-                        // Glassmorphic Dashboard Grid
-                        LazyVGrid(columns: [
-                            GridItem(.flexible(), spacing: 16),
-                            GridItem(.flexible(), spacing: 16)
-                        ], spacing: 16) {
-                            ForEach(Dashboard.dashboards(for: selectedCategory)) { dashboard in
-                                NavigationLink(destination: DashboardDetailView(dashboard: dashboard)) {
-                                    GlassmorphicDashboardCard(dashboard: dashboard)
-                                }
-                                .buttonStyle(PlainButtonStyle())
+                                let dashboards = Dashboard.dashboards(for: category)
+                                DashboardHorizontalListView(dashboardList: dashboards)
+                                    .frame(height: Constants.dashboardListMinimumHeight)
                             }
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 40)
                     }
+                    .padding(.bottom, 40)
                 }
                 
                 // Toast Notification
@@ -140,15 +116,131 @@ struct ContentView: View {
     
     private func showToastMessage(_ message: String) {
         toastMessage = message
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+        withAnimation(.spring(response: Constants.springResponse, dampingFraction: Constants.springDampingFraction)) {
             showToast = true
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.toastDuration) {
+            withAnimation(.spring(response: 0.4, dampingFraction: Constants.springDampingFraction)) {
                 showToast = false
             }
         }
+    }
+}
+
+// MARK: - Category and Dashboard List Views
+
+private struct CategoryTitleView: View {
+    var title: String
+
+    var body: some View {
+        Text(title)
+            .font(.title2)
+            .bold()
+            .foregroundColor(.white)
+            .padding(.top, Constants.categoryHeaderTopPadding)
+            .padding(.bottom, Constants.categoryHeaderBottomPadding)
+            .padding(.leading, Constants.leadingContentInset)
+    }
+}
+
+struct DashboardHorizontalListView: View {
+    let dashboardList: [Dashboard]
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: Constants.standardPadding) {
+                Spacer()
+                    .frame(width: Constants.standardPadding)
+                ForEach(dashboardList) { dashboard in
+                    NavigationLink(destination: DashboardDetailView(dashboard: dashboard)) {
+                        DashboardListItemView(dashboard: dashboard)
+                            .aspectRatio(Constants.dashboardListItemAspectRatio, contentMode: .fill)
+                    }
+                    .buttonStyle(.plain)
+                }
+                Spacer()
+                    .frame(width: Constants.standardPadding / 2)
+            }
+        }
+    }
+}
+
+struct DashboardListItemView: View {
+    let dashboard: Dashboard
+
+    var body: some View {
+        ZStack {
+            // Background with icon or color
+            if dashboard.icon.hasSuffix(".png") || dashboard.icon.hasSuffix(".jpg") {
+                if let uiImage = loadImageFromBundle(named: dashboard.icon) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                } else {
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+            } else {
+                // Emoji or solid color background
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay {
+                        Text(dashboard.icon)
+                            .font(.system(size: 60))
+                            .opacity(0.3)
+                    }
+            }
+        }
+        .overlay {
+            ReadabilityRoundedRectangle()
+        }
+        .clipped()
+        .cornerRadius(Constants.cornerRadius)
+        .overlay(alignment: .bottom) {
+            VStack(spacing: 4) {
+                Text(dashboard.name)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
+
+                Text(dashboard.description)
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.9))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            .padding(.horizontal, 8)
+            .padding(.bottom, 12)
+        }
+        .shadow(color: .black.opacity(Constants.glassShadowOpacity), radius: Constants.glassShadowRadius)
+    }
+
+    // Helper function to load image from bundle
+    private func loadImageFromBundle(named name: String) -> UIImage? {
+        let baseName = name.replacingOccurrences(of: ".png", with: "")
+            .replacingOccurrences(of: ".jpg", with: "")
+
+        if let path = Bundle.main.path(forResource: baseName, ofType: "png") {
+            return UIImage(contentsOfFile: path)
+        } else if let path = Bundle.main.path(forResource: baseName, ofType: "jpg") {
+            return UIImage(contentsOfFile: path)
+        }
+        return nil
     }
 }
 
@@ -156,22 +248,22 @@ struct ContentView: View {
 
 struct GlassmorphicCard<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    .fill(Constants.glassBackgroundStyle)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 20)
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius)
                             .stroke(
                                 LinearGradient(
                                     colors: [
-                                        Color.white.opacity(0.3),
+                                        Color.white.opacity(Constants.glassOpacity),
                                         Color.white.opacity(0.1)
                                     ],
                                     startPoint: .topLeading,
@@ -181,26 +273,25 @@ struct GlassmorphicCard<Content: View>: View {
                             )
                     )
             )
-            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+            .shadow(color: .black.opacity(Constants.glassShadowOpacity), radius: Constants.glassShadowRadius, x: 0, y: 5)
     }
 }
 
 struct GlassmorphicDashboardCard: View {
     let dashboard: Dashboard
-    @State private var isPressed = false
-    
+
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Constants.standardPadding) {
             // Icon with glassmorphic background
             ZStack {
                 Circle()
-                    .fill(.ultraThinMaterial)
+                    .fill(Constants.glassBackgroundStyle)
                     .frame(width: 70, height: 70)
                     .overlay(
                         Circle()
-                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            .stroke(Color.white.opacity(Constants.glassStrokeOpacity), lineWidth: 1)
                     )
-                
+
                 if dashboard.icon.hasSuffix(".png") || dashboard.icon.hasSuffix(".jpg") {
                     if let uiImage = loadImageFromBundle(named: dashboard.icon) {
                         Image(uiImage: uiImage)
@@ -235,16 +326,16 @@ struct GlassmorphicDashboardCard: View {
                 .lineLimit(3)
         }
         .frame(maxWidth: .infinity, minHeight: 140)
-        .padding(20)
+        .padding(Constants.leadingContentInset)
         .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.ultraThinMaterial)
+            RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                .fill(Constants.glassBackgroundStyle)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 20)
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
                         .stroke(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.3),
+                                    Color.white.opacity(Constants.glassOpacity),
                                     Color.white.opacity(0.1)
                                 ],
                                 startPoint: .topLeading,
@@ -254,13 +345,7 @@ struct GlassmorphicDashboardCard: View {
                         )
                 )
         )
-        .scaleEffect(isPressed ? 0.95 : 1.0)
-        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
-            withAnimation(.easeInOut(duration: 0.1)) {
-                isPressed = pressing
-            }
-        }, perform: {})
+        .shadow(color: .black.opacity(Constants.glassShadowOpacity), radius: Constants.glassShadowRadius, x: 0, y: 5)
     }
 
     // Helper function to load image from bundle
@@ -384,6 +469,16 @@ struct DashboardCard: View {
             return UIImage(contentsOfFile: path)
         }
         return nil
+    }
+}
+
+// MARK: - Custom Button Style
+
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 

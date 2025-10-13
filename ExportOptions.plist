@@ -14,10 +14,9 @@
     <false/>
     <key>signingStyle</key>
     <string>automatic</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>davisdanenet.Dane</key>
-        <string>match AppStore davisdanenet.Dane</string>
-    </dict>
+    <key>destination</key>
+    <string>upload</string>
+    <key>manageAppVersionAndBuildNumber</key>
+    <false/>
 </dict>
 </plist>
