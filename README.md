@@ -130,7 +130,7 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 #### ⚙️ **Plant Control**
 - **CHASCOmobile** - plant control interface with VPN integration
 
-![CHASCOmobile VPN Connection](readmeasset/screenshotchascomobile.png)
+![CHASCOmobile integration](#CHASCOmobile)(readmeasset/screenshotchascomobile.png)
 
 **NEW in v1.4:** Secure VPN connection to live CHASCO plant controls
 - Click the VPN activation button to connect to your plant's SCADA system
