@@ -4,7 +4,7 @@
 
 **ABM.ai** is a native iOS application that brings your entire operations ecosystem to your mobile device. Access live inventory levels, demand forecasts, driver schedules, AI-powered tools, and plant control systems—all from one interface.
 
-![ABM.ai App Screenshot](Dane/readmeasset/screenshotgeneral.png)
+![ABM.ai App Screenshot](readmeasset/screenshotgeneral.png)
 
 ---
 
@@ -16,11 +16,11 @@
 
 You'll receive an email invitation from **Dane Davis via TestFlight** with the subject line similar to "Join the ABM.ai beta test."
 
-![Email Invitation](Dane/InstallInstructions/1.png)
+![Email Invitation](readmeasset/InstallInstructions/1_0.png)
 
 **Important:** Look for your **unique invitation code** in the email. It's easy to miss!
 
-![Invitation Code Location](Dane/InstallInstructions/1_5.png)
+![Invitation Code Location](readmeasset/InstallInstructions/1_5.png)
 
 ### Step 2: Download TestFlight 📱
 
@@ -42,13 +42,13 @@ Before you can install ABM.ai, you need the **TestFlight app** (it's free from A
 4. **Enter your invitation code** from the email
 5. Tap **"Redeem"** to activate
 
-![Redeem Code in TestFlight](Dane/InstallInstructions/3.png)
+![Redeem Code in TestFlight](readmeasset/InstallInstructions/3.png)
 
 ### Step 4: Install ABM.ai ✅
 
 After redeeming your code, **ABM.ai** will appear in your TestFlight app.
 
-![ABM.ai in TestFlight](Dane/InstallInstructions/4.png)
+![ABM.ai in TestFlight](readmeasset/InstallInstructions/4.png)
 
 1. Tap **"Install"** next to ABM.ai
 2. Wait for the download to complete (usually takes 30-60 seconds)
@@ -58,7 +58,7 @@ After redeeming your code, **ABM.ai** will appear in your TestFlight app.
 
 After installation, **ABM.ai** appears on your iPhone home screen just like any other app!
 
-![ABM.ai Working](Dane/InstallInstructions/5.png)
+![ABM.ai Working](readmeasset/InstallInstructions/5.png)
 
 **Bonus:** The app will **automatically update** whenever we release new features or fixes. You'll get a notification in TestFlight when updates are available.
 
@@ -130,7 +130,7 @@ Access 10 live operational dashboards and 3 WIP dashboards organized by category
 #### ⚙️ **Plant Control**
 - **CHASCOmobile** - plant control interface with VPN integration
 
-![CHASCOmobile VPN Connection](chascomobilevpn.png)
+![CHASCOmobile VPN Connection](readmeasset/screenshotchascomobile.png)
 
 **NEW in v1.4:** Secure VPN connection to live CHASCO plant controls
 - Click the VPN activation button to connect to your plant's SCADA system
