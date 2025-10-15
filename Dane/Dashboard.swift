@@ -18,9 +18,9 @@ struct Dashboard: Identifiable {
 
 enum DashboardCategory: String, CaseIterable {
     case inventory = "Inventory"
-    case demand = "ProductDemands"
+    case demand = "Product Demand Dashboards"
     case operations = "Schedule & DF"
-    case ai = "AI ChatBot Tools"
+    case ai = "AI Tools + ChatBot Links"
     case control = "CHASCOmobile"
 }
 
@@ -29,21 +29,21 @@ extension Dashboard {
         // Inventory Dashboards
         Dashboard(
             name: "Chameleon Inventory",
-            description: "Pittsburg & Brentwood chameleon inventory",
+            description: "Chameleon Inventory for BW & Pit",
             icon: "🦎",
             htmlPath: "chameleon.html",
             category: .inventory
         ),
         Dashboard(
             name: "Admix Inventory",
-            description: "Admixture & Dry Additives inventory Pit&BW",
+            description: "Admixture (Dry Goods) Inventory for Bw & Pit",
             icon: "cemexlogo.png",
             htmlPath: "Admix.html",
             category: .inventory
         ),
         Dashboard(
             name: "Inventory Submission",
-            description: "Update Inventories for your department",
+            description: "Update Inventories For BW & Pit + RAP area",
             icon: "deister.png",
             htmlPath: "InventorySubmission.html",
             category: .inventory
@@ -52,35 +52,35 @@ extension Dashboard {
         // Weekly Demand Dashboards
         Dashboard(
             name: "Concrete Demand",
-            description: "Weekly concrete demand dashboard",
+            description: "Weekly Concrete Demand",
             icon: "coneco.png",
             htmlPath: "ConcWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Asphalt Demand",
-            description: "Weekly asphalt demand dashboard",
+            description: "Weekly Asphalt Demand",
             icon: "astelogo.png",
             htmlPath: "AsphaltWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "AC Oil Demand",
-            description: "Weekly AC oil tracking",
+            description: "Weekly AC OIL Demand",
             icon: "acoillogo.png",
             htmlPath: "ACoilWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "Powder Demand",
-            description: "Weekly Cement/Slag/Flyash powder demand",
+            description: "Weekly Cement/Slag/Flyash Demand",
             icon: "cementlogo.png",
             htmlPath: "PowderWeekly.html",
             category: .demand
         ),
         Dashboard(
             name: "All Raw Material Demands",
-            description: "Combined raw material demand",
+            description: "Combined Raw Material Demands",
             icon: "rawmatlogo.png",
             htmlPath: "RawWeeklyComb.html",
             category: .demand
@@ -89,7 +89,7 @@ extension Dashboard {
         // Operations
         Dashboard(
             name: "Driver Schedule",
-            description: "Driver scheduling dashboard",
+            description: "Driver Start Times & Schedule",
             icon: "dflogo.png",
             htmlPath: "ScheduleDash.html",
             category: .operations
@@ -98,14 +98,14 @@ extension Dashboard {
         // AI Tools
         Dashboard(
             name: "Concrete Quote AI",
-            description: "AI-powered concrete quotes",
+            description: "AI-powered Concrete Quick-Quote",
             icon: "zapierchat.png",
             htmlPath: "ConcQuoteBot.html",
             category: .ai
         ),
         Dashboard(
             name: "Mix Design Assist",
-            description: "AI mix design assistance",
+            description: "AI Mix Design Selector",
             icon: "mixlogodesign.png",
             htmlPath: "MixDesignAI.html",
             category: .ai
@@ -114,7 +114,7 @@ extension Dashboard {
         // Plant Control
         Dashboard(
             name: "CHASCOmobile",
-            description: "plant control interface for CHASCO asphalt plant controls",
+            description: "Plant Control Interface for CHASCO",
             icon: "chascologo.png",
             htmlPath: "index.html",
             category: .control

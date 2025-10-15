@@ -8,18 +8,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Repository:** https://github.com/davisdane2/ABMai
 
-**Current Version:** 1.2 (increments by 0.1 each build until v2.0)
+**Current Version:** 1.42 → 1.5 (v1.5 adds centralized data layer)
 
 ## Architecture
 
 ### Core Components
 
-The app uses a **hybrid architecture** combining native SwiftUI with WKWebView-embedded HTML dashboards:
+The app uses a **hybrid architecture** combining native SwiftUI with WKWebView-embedded HTML dashboards, enhanced in v1.5 with centralized data management:
 
-1. **DaneApp.swift** - App entry point, launches ContentView
+#### View Layer
+1. **DaneApp.swift** - App entry point, initializes DashboardDataManager
 2. **ContentView.swift** - Main UI with glassmorphic design, category picker, and dashboard grid
 3. **Dashboard.swift** - Data model defining 13 dashboards organized into 5 categories
-4. **DashboardWebView.swift** - WKWebView wrapper that loads HTML dashboards from bundle resources
+4. **DashboardWebView.swift** - WKWebView wrapper with data injection support
+
+#### Data Layer (v1.5+)
+5. **DashboardDataManager.swift** - Central @ObservableObject managing all dashboard data
+6. **SupabaseClient.swift** - Repository-pattern API client for Supabase
+7. **DashboardDataModels.swift** - Codable models for all dashboard data types
+
+### Data Flow (v1.5)
+```
+App Launch → DashboardDataManager starts background refresh (60s)
+    ↓
+SupabaseClient fetches all data in parallel (1 API call)
+    ↓
+Data cached to UserDefaults (offline support)
+    ↓
+Data injected into WebViews as window.centralizedDashboardData
+    ↓
+HTML dashboards use centralized data OR fetch independently (backward compatible)
+```
 
 ### Dashboard Categories (DashboardCategory enum)
 
@@ -105,10 +124,24 @@ xcodebuild -exportArchive -archivePath ./build/Dane.xcarchive -exportPath ./buil
 
 ## Key Files & Their Roles
 
+### View Layer
 - **Dashboard.swift:128** - `allDashboards` array contains all dashboard definitions; add new dashboards here
 - **ContentView.swift:11** - `selectedCategory` state controls which category is displayed
-- **DashboardWebView.swift:25** - `loadHTML()` handles HTML file loading and error logging
+- **DashboardWebView.swift** - WKWebView implementation with data injection at lines 148-193
+
+### Data Layer (v1.5+)
+- **DashboardDataManager.swift** - Central data orchestrator with background refresh
+  - `startBackgroundRefresh()` - Starts 60s timer for data updates
+  - `fetchAllData()` - Parallel fetch of all dashboard endpoints
+  - `exportAsJSON()` - Prepares data for WebView injection
+- **SupabaseClient.swift** - Repository pattern API client
+  - `fetchAllDashboardData()` - Parallel batch fetch
+  - Individual fetch methods for each dashboard type
+- **DashboardDataModels.swift** - Cross-platform Codable models
+
+### Documentation
 - **VERSION.md** - Version history and update instructions
+- **V1.5-IMPLEMENTATION.md** - v1.5 setup guide and architecture details
 
 ## Important Implementation Details
 
@@ -164,12 +197,46 @@ Icons can be emojis or image files:
 - Add real-time subscriptions
 - Implement offline caching
 - Native authentication
+- Centralized data layer with background refresh (eliminates per-WebView queries)
 
 **Future Phases:**
+- **Android Migration** - All architectural decisions should consider cross-platform compatibility
+  - Use platform-agnostic data models and business logic
+  - Prefer shared patterns (e.g., centralized data layer, repository pattern)
+  - Avoid iOS-specific dependencies where possible
+  - Document platform-specific code clearly for easier porting
 - CHASCOmobile SCADA integration with VPN
 - Push notifications
 - Multi-user collaboration
 - PDF/Excel export capabilities
+
+## Cross-Platform Considerations
+
+**IMPORTANT:** All new features and architectural changes must be designed with eventual Android migration in mind.
+
+### Data Layer Strategy
+- Use **repository pattern** for data access (easily portable to Kotlin/Jetpack Compose)
+- Keep business logic separate from UI code
+- Use platform-agnostic JSON models
+- Centralized Supabase client configuration
+
+### Recommended Architecture (v2.0+)
+```
+┌─────────────────────────────────────┐
+│  UI Layer (SwiftUI → Compose later) │
+├─────────────────────────────────────┤
+│  ViewModels/Presenters             │  ← Platform-specific but thin
+├─────────────────────────────────────┤
+│  Repository Layer                   │  ← Easily portable
+├─────────────────────────────────────┤
+│  Data Sources (Supabase, Local DB) │  ← Same patterns on both platforms
+└─────────────────────────────────────┘
+```
+
+### Avoid
+- Heavy use of iOS-specific frameworks (UIKit, CoreData)
+- Tight coupling between UI and data fetching
+- Platform-specific serialization (use Codable → kotlinx.serialization patterns)
 
 ## GitHub Workflow
 

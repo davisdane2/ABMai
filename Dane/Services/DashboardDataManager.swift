@@ -1,0 +1,267 @@
+//
+//  DashboardDataManager.swift
+//  Dane
+//
+//  Created by Dane Davis on 10/14/25.
+//  Centralized data management with background refresh
+//  Cross-platform architecture (iOS → Android migration ready)
+//
+
+import Foundation
+import Combine
+
+/// Central hub for all dashboard data
+/// Fetches data once, distributes to all dashboards
+/// This pattern translates directly to Android's ViewModel + StateFlow
+@MainActor
+class DashboardDataManager: ObservableObject {
+
+    // MARK: - Published Properties (Observable State)
+    // These will become StateFlow in Android
+
+    @Published var dataSnapshot: DashboardDataSnapshot?
+    @Published var isLoading: Bool = false
+    @Published var lastRefreshDate: Date?
+    @Published var error: SupabaseError?
+
+    // Individual data streams for specific dashboards
+    @Published var chameleonInventory: [ChameleonInventory] = []
+    @Published var admixInventory: [AdmixInventory] = []
+    @Published var concreteDemand: [ConcreteDemand] = []
+    @Published var weeklyDemand: [WeeklyDemand] = []
+    @Published var driverSchedule: [DriverSchedule] = []
+
+    // MARK: - Configuration
+    private let refreshInterval: TimeInterval = 60 // 60 seconds (1 minute)
+    private let client: SupabaseClient
+    private var refreshTimer: Timer?
+    private var isBackgroundRefreshEnabled = false
+
+    // MARK: - Initialization
+
+    init(client: SupabaseClient = .shared) {
+        self.client = client
+        print("📊 DashboardDataManager initialized")
+    }
+
+    // MARK: - Public API
+
+    /// Start automatic background refresh
+    /// Call this when app becomes active
+    func startBackgroundRefresh() {
+        guard !isBackgroundRefreshEnabled else {
+            print("⚠️ Background refresh already enabled")
+            return
+        }
+
+        isBackgroundRefreshEnabled = true
+        print("▶️ Starting background refresh (interval: \(refreshInterval)s)")
+
+        // Initial fetch
+        Task {
+            await fetchAllData()
+        }
+
+        // Setup timer for periodic refresh
+        refreshTimer = Timer.scheduledTimer(
+            withTimeInterval: refreshInterval,
+            repeats: true
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.fetchAllData(silent: true)
+            }
+        }
+    }
+
+    /// Stop background refresh
+    /// Call this when app goes to background
+    func stopBackgroundRefresh() {
+        guard isBackgroundRefreshEnabled else { return }
+
+        isBackgroundRefreshEnabled = false
+        refreshTimer?.invalidate()
+        refreshTimer = nil
+        print("⏸️ Stopped background refresh")
+    }
+
+    /// Manual refresh (user-triggered)
+    func refresh() async {
+        await fetchAllData(silent: false)
+    }
+
+    // MARK: - Data Fetching
+
+    /// Fetch all dashboard data in one parallel batch
+    private func fetchAllData(silent: Bool = false) async {
+        if !silent {
+            isLoading = true
+        }
+
+        do {
+            // Parallel fetch all endpoints
+            let snapshot = await client.fetchAllDashboardData()
+
+            // Update published properties
+            self.dataSnapshot = snapshot
+            self.lastRefreshDate = Date()
+            self.error = nil
+
+            // Update individual arrays
+            if let chameleon = snapshot.chameleonInventory {
+                self.chameleonInventory = chameleon
+            }
+            if let admix = snapshot.admixInventory {
+                self.admixInventory = admix
+            }
+            if let concrete = snapshot.concreteDemand {
+                self.concreteDemand = concrete
+            }
+            if let weekly = snapshot.weeklyDemand {
+                self.weeklyDemand = weekly
+            }
+            if let schedule = snapshot.driverSchedule {
+                self.driverSchedule = schedule
+            }
+
+            // Cache to UserDefaults for offline access
+            cacheSnapshot(snapshot)
+
+            if !silent {
+                print("✅ Data refresh complete - \(snapshot.fetchedAt.formatted())")
+            }
+
+        } catch let supabaseError as SupabaseError {
+            self.error = supabaseError
+            print("❌ Data fetch error: \(supabaseError.localizedDescription)")
+
+            // Try to load cached data
+            loadCachedData()
+        }
+
+        if !silent {
+            isLoading = false
+        }
+    }
+
+    // MARK: - Caching (Offline Support)
+
+    private func cacheSnapshot(_ snapshot: DashboardDataSnapshot) {
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            let data = try encoder.encode(snapshot)
+            UserDefaults.standard.set(data, forKey: "cached_dashboard_snapshot")
+            print("💾 Data cached successfully")
+        } catch {
+            print("⚠️ Failed to cache data: \(error.localizedDescription)")
+        }
+    }
+
+    private func loadCachedData() {
+        guard let data = UserDefaults.standard.data(forKey: "cached_dashboard_snapshot") else {
+            print("ℹ️ No cached data available")
+            return
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let snapshot = try decoder.decode(DashboardDataSnapshot.self, from: data)
+
+            // Update UI with cached data
+            self.dataSnapshot = snapshot
+            if let chameleon = snapshot.chameleonInventory {
+                self.chameleonInventory = chameleon
+            }
+            if let admix = snapshot.admixInventory {
+                self.admixInventory = admix
+            }
+            if let concrete = snapshot.concreteDemand {
+                self.concreteDemand = concrete
+            }
+            if let weekly = snapshot.weeklyDemand {
+                self.weeklyDemand = weekly
+            }
+            if let schedule = snapshot.driverSchedule {
+                self.driverSchedule = schedule
+            }
+
+            print("📦 Loaded cached data from \(snapshot.fetchedAt.formatted())")
+        } catch {
+            print("⚠️ Failed to load cached data: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Data Export for WebViews
+
+    /// Export data as JSON string for WebView injection
+    func exportAsJSON() -> String? {
+        guard let snapshot = dataSnapshot else { return nil }
+
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = .prettyPrinted
+            let data = try encoder.encode(snapshot)
+            return String(data: data, encoding: .utf8)
+        } catch {
+            print("⚠️ Failed to export JSON: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    /// Export specific dashboard data
+    func exportChameleonJSON() -> String? {
+        return encodeToJSON(chameleonInventory)
+    }
+
+    func exportAdmixJSON() -> String? {
+        return encodeToJSON(admixInventory)
+    }
+
+    func exportConcreteJSON() -> String? {
+        return encodeToJSON(concreteDemand)
+    }
+
+    func exportWeeklyDemandJSON() -> String? {
+        return encodeToJSON(weeklyDemand)
+    }
+
+    func exportDriverScheduleJSON() -> String? {
+        return encodeToJSON(driverSchedule)
+    }
+
+    private func encodeToJSON<T: Encodable>(_ data: T) -> String? {
+        do {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = .prettyPrinted
+            let jsonData = try encoder.encode(data)
+            return String(data: jsonData, encoding: .utf8)
+        } catch {
+            print("⚠️ JSON encoding failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    // MARK: - Lifecycle Management
+
+    deinit {
+        stopBackgroundRefresh()
+    }
+}
+
+// MARK: - App Lifecycle Extension
+extension DashboardDataManager {
+    /// Call when app enters foreground
+    func handleAppDidBecomeActive() {
+        print("🌟 App became active - resuming data refresh")
+        startBackgroundRefresh()
+    }
+
+    /// Call when app enters background
+    func handleAppWillResignActive() {
+        print("💤 App will resign active - pausing data refresh")
+        stopBackgroundRefresh()
+    }
+}
