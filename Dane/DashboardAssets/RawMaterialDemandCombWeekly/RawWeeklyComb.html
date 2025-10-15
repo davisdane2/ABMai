@@ -3,327 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raw Material Demand Forecast</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 10px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            padding: 15px;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-        .material-section {
-            margin-bottom: 50px;
-        }
-        .section-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px;
-            border-radius: 8px 8px 0 0;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 0;
-        }
-        .section-title.asphalt {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        }
-        .plant-subsection {
-            margin-top: 20px;
-        }
-        .plant-header {
-            background: #f8f9fa;
-            padding: 10px 12px;
-            border-left: 4px solid #764ba2;
-            font-size: 16px;
-            font-weight: bold;
-            color: #495057;
-            margin-bottom: 10px;
-        }
-        .plant-header.asphalt {
-            border-left-color: #2a5298;
-        }
-        
-        /* Mobile-first responsive table */
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 20px;
-        }
-        
-        table {
-            width: 100%;
-            min-width: 600px; /* Minimum width to prevent cramping */
-            border-collapse: collapse;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            font-size: 14px;
-        }
-        
-        th {
-            background: #f8f9fa;
-            padding: 8px 6px;
-            text-align: center;
-            font-weight: 600;
-            color: #495057;
-            border: 1px solid #dee2e6;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-        th:first-child {
-            text-align: left;
-            width: 120px;
-            min-width: 120px;
-        }
-        td {
-            padding: 8px 6px;
-            text-align: center;
-            border: 1px solid #dee2e6;
-            font-size: 13px;
-        }
-        td:first-child {
-            text-align: left;
-            font-weight: 500;
-            background: #f8f9fa;
-            font-size: 12px;
-        }
-        .total-row {
-            background: #e3f2fd;
-            font-weight: bold;
-        }
-        .total-row td {
-            background: #e3f2fd;
-        }
-        .qty-cell {
-            font-family: 'Courier New', monospace;
-        }
-        tr:hover:not(.total-row) {
-            background: #f5f5f5;
-        }
-        .empty-cell {
-            color: #ccc;
-        }
-        .note {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-    </style>
+    <title>Raw Material Demand Dashboard</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>📊 Raw Material Demand Forecast - 5 Day Schedule</h1>
-        
-        <!-- CONCRETE RAW MATERIALS SECTION -->
-        <div class="material-section">
-            <div class="section-title">🏗️ CONCRETE RAW MATERIALS</div>
-            
-            <!-- BRENTWOOD -->
-            <div class="plant-subsection">
-                <div class="plant-header">BRENTWOOD PLANT</div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Raw Material</th>
-                                <th>9/29</th>
-                                <th>9/30</th>
-                                <th>10/1</th>
-                                <th>10/2</th>
-                                <th>10/3</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <td>Concrete Sand <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>374.3</td>
-                            <td class='qty-cell'>85.5</td>
-                            <td class='qty-cell'>48.4</td>
-                            <td class='qty-cell'>264.5</td>
-                            <td class='qty-cell'>30.4</td>
-                        </tr>
-                        <tr>
-                            <td>1x4 Crush Rock <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>410.0</td>
-                            <td class='qty-cell'>74.0</td>
-                            <td class='qty-cell'>49.9</td>
-                            <td class='qty-cell'>291.9</td>
-                            <td class='qty-cell'>31.3</td>
-                        </tr>
-                        <tr>
-                            <td>Peagravel <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>4.9</td>
-                            <td class='qty-cell'>26.9</td>
-                            <td class='qty-cell'>3.0</td>
-                            <td class='qty-cell'>2.6</td>
-                            <td class='qty-cell'>1.9</td>
-                        </tr>
-                        <tr class='total-row'>
-                            <td><strong>TOTAL</strong></td>
-                            <td class='qty-cell'><strong>789.3</strong></td>
-                            <td class='qty-cell'><strong>186.4</strong></td>
-                            <td class='qty-cell'><strong>101.3</strong></td>
-                            <td class='qty-cell'><strong>559.0</strong></td>
-                            <td class='qty-cell'><strong>63.6</strong></td>
-                        </tr>
-                    </tbody>
-                    </table>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createClient } = supabase;
+
+        const supabaseClient = createClient(
+            'https://ntgxamggdtolnlevskjb.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50Z3hhbWdnZHRvbG5sZXZza2piIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNTE3NDMsImV4cCI6MjA3NDgyNzc0M30.r18wk6hrD3Qr4PgoQXIqskDsJCKO9jvLQCHQDDtJQvI'
+        );
+
+        function RawMaterialDemand() {
+            const [data, setData] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [lastUpdated, setLastUpdated] = useState(null);
+
+            const fetchData = async () => {
+                setLoading(true);
+                setError(null);
+
+                try {
+                    const { data: fetchedData, error: fetchError } = await supabaseClient
+                        .from('raw_material_demand')
+                        .select('*')
+                        .order('demand_date', { ascending: true });
+
+                    if (fetchError) throw fetchError;
+
+                    setData(fetchedData || []);
+                    setLastUpdated(new Date());
+                    console.log('✅ Data loaded:', fetchedData?.length, 'records');
+                } catch (err) {
+                    console.error('❌ Error fetching data:', err);
+                    setError(err.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            // Optional: Listen for centralized data updates (future enhancement)
+            useEffect(() => {
+                const handleCentralData = (event) => {
+                    console.log('📦 Received centralized data update');
+                    if (event.detail?.weeklyDemand) {
+                        // Filter for raw materials if your centralized data includes this
+                        const rawMaterialData = event.detail.weeklyDemand.filter(
+                            item => item.productType === 'raw_material'
+                        );
+                        if (rawMaterialData.length > 0) {
+                            setData(rawMaterialData);
+                            setLastUpdated(new Date());
+                            setLoading(false);
+                        }
+                    }
+                };
+
+                window.addEventListener('dashboardDataUpdated', handleCentralData);
+
+                return () => window.removeEventListener('dashboardDataUpdated', handleCentralData);
+            }, []);
+
+            useEffect(() => {
+                fetchData();
+            }, []);
+
+            const organizeData = () => {
+                const dates = [...new Set(data.map(d => d.demand_date))].sort();
+                
+                const plants = {
+                    'Brentwood': { category: 'Concrete', materials: ['Concrete Sand', '1x4 Crush Rock', 'Peagravel'] },
+                    'Pittsburg': { category: 'Concrete', materials: ['Concrete Sand', '1x4 Crush Rock', 'Peagravel'] },
+                    'Asphalt Plant': { category: 'Asphalt', materials: ['Dust', 'Man Sand', '3/8', '1/2', '3/4'] }
+                };
+
+                return { dates, plants };
+            };
+
+            const getQuantity = (plantName, materialName, date) => {
+                const record = data.find(
+                    d => d.plant_name === plantName && 
+                         d.material_name === materialName && 
+                         d.demand_date === date
+                );
+                return record ? record.quantity_tons : null;
+            };
+
+            const getDailyTotal = (plantName, date) => {
+                return data
+                    .filter(d => d.plant_name === plantName && d.demand_date === date)
+                    .reduce((sum, d) => sum + parseFloat(d.quantity_tons), 0);
+            };
+
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr + 'T00:00:00');
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                return `${days[date.getDay()]} ${date.getMonth() + 1}/${date.getDate()}`;
+            };
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-red-300 p-8 flex items-center justify-center">
+                        <div className="bg-white p-8 rounded-xl shadow-2xl">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                            <p className="mt-4 text-gray-600 font-semibold">Loading data...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (error) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-red-300 p-8 flex items-center justify-center">
+                        <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md">
+                            <div className="text-red-600 text-xl font-bold mb-4">⚠️ Error</div>
+                            <p className="text-gray-700">{error}</p>
+                            <button
+                                onClick={fetchData}
+                                className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition"
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            const { dates, plants } = organizeData();
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-red-300 p-5">
+                    <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-2xl p-8">
+                        <div className="flex justify-between items-center mb-8">
+                            <h1 className="text-3xl font-bold text-gray-800">
+                                📊 Raw Material Demand Forecast - 5 Day Schedule
+                            </h1>
+                            <button
+                                onClick={fetchData}
+                                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
+                            >
+                                <span>🔄</span>
+                                Refresh
+                            </button>
+                        </div>
+
+                        {lastUpdated && (
+                            <div className="text-sm text-gray-600 mb-6">
+                                Last updated: {lastUpdated.toLocaleString()}
+                            </div>
+                        )}
+
+                        {/* CONCRETE SECTION */}
+                        <div className="mb-12">
+                            <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white text-2xl font-bold py-4 px-6 rounded-t-lg">
+                                🏗️ CONCRETE RAW MATERIALS
+                            </div>
+
+                            {['Brentwood', 'Pittsburg'].map(plantName => (
+                                <div key={plantName} className="mt-8">
+                                    <div className="bg-gray-100 border-l-4 border-purple-600 py-3 px-4 font-bold text-lg text-gray-700 mb-2">
+                                        {plantName.toUpperCase()} PLANT
+                                    </div>
+
+                                    <div className="overflow-x-auto shadow-lg">
+                                        <table className="w-full border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-100">
+                                                    <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
+                                                        Raw Material
+                                                    </th>
+                                                    {dates.map(date => (
+                                                        <th key={date} className="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">
+                                                            {formatDate(date)}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {plants[plantName].materials.map(material => (
+                                                    <tr key={material} className="hover:bg-gray-50 transition">
+                                                        <td className="border border-gray-300 px-4 py-2 bg-gray-50 font-medium">
+                                                            {material} <span className="text-xs text-gray-500">(TONS)</span>
+                                                        </td>
+                                                        {dates.map(date => {
+                                                            const qty = getQuantity(plantName, material, date);
+                                                            return (
+                                                                <td key={date} className="border border-gray-300 px-4 py-2 text-center font-mono">
+                                                                    {qty !== null ? qty.toFixed(1) : <span className="text-gray-300">-</span>}
+                                                                </td>
+                                                            );
+                                                        })}
+                                                    </tr>
+                                                ))}
+                                                <tr className="bg-blue-50 font-bold">
+                                                    <td className="border border-gray-300 px-4 py-2">
+                                                        TOTAL
+                                                    </td>
+                                                    {dates.map(date => (
+                                                        <td key={date} className="border border-gray-300 px-4 py-2 text-center font-mono">
+                                                            {getDailyTotal(plantName, date).toFixed(1)}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* ASPHALT SECTION */}
+                        <div className="mb-8">
+                            <div className="bg-gradient-to-r from-blue-700 to-blue-900 text-white text-2xl font-bold py-4 px-6 rounded-t-lg">
+                                🛣️ ASPHALT RAW MATERIALS
+                            </div>
+
+                            <div className="mt-8">
+                                <div className="bg-gray-100 border-l-4 border-blue-700 py-3 px-4 font-bold text-lg text-gray-700 mb-2">
+                                    ASPHALT PLANT
+                                </div>
+
+                                <div className="overflow-x-auto shadow-lg">
+                                    <table className="w-full border-collapse">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">
+                                                    Raw Material
+                                                </th>
+                                                {dates.map(date => (
+                                                    <th key={date} className="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">
+                                                        {formatDate(date)}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {plants['Asphalt Plant'].materials.map(material => (
+                                                <tr key={material} className="hover:bg-gray-50 transition">
+                                                    <td className="border border-gray-300 px-4 py-2 bg-gray-50 font-medium">
+                                                        {material} <span className="text-xs text-gray-500">(TONS)</span>
+                                                    </td>
+                                                    {dates.map(date => {
+                                                        const qty = getQuantity('Asphalt Plant', material, date);
+                                                        return (
+                                                            <td key={date} className="border border-gray-300 px-4 py-2 text-center font-mono">
+                                                                {qty !== null ? qty.toFixed(1) : <span className="text-gray-300">-</span>}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                </tr>
+                                            ))}
+                                            <tr className="bg-blue-50 font-bold">
+                                                <td className="border border-gray-300 px-4 py-2">
+                                                    TOTAL
+                                                </td>
+                                                {dates.map(date => {
+                                                    const total = getDailyTotal('Asphalt Plant', date);
+                                                    return (
+                                                        <td key={date} className="border border-gray-300 px-4 py-2 text-center font-mono">
+                                                            {total > 0 ? total.toFixed(1) : <span className="text-gray-300">-</span>}
+                                                        </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* NOTES */}
+                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                            <div className="font-bold text-gray-800 mb-2">📝 Notes:</div>
+                            <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                                <li>All quantities shown in TONS</li>
+                                <li>Concrete raw materials calculated from mix recipes (lbs/CY converted to tons)</li>
+                                <li>Asphalt raw materials calculated after removing RAP content from total tonnage</li>
+                                <li>Daily totals represent sum of all raw materials for that plant/day</li>
+                                <li>Data refreshes automatically from Supabase database</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- PITTSBURG -->
-            <div class="plant-subsection">
-                <div class="plant-header">PITTSBURG PLANT</div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Raw Material</th>
-                                <th>9/29</th>
-                                <th>9/30</th>
-                                <th>10/1</th>
-                                <th>10/2</th>
-                                <th>10/3</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <td>Concrete Sand <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>112.9</td>
-                            <td class='qty-cell'>92.6</td>
-                            <td class='qty-cell'>92.7</td>
-                            <td class='qty-cell'>95.9</td>
-                            <td class='qty-cell'>96.6</td>
-                        </tr>
-                        <tr>
-                            <td>1x4 Crush Rock <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>91.1</td>
-                            <td class='qty-cell'>54.3</td>
-                            <td class='qty-cell'>43.1</td>
-                            <td class='qty-cell'>56.8</td>
-                            <td class='qty-cell'>46.6</td>
-                        </tr>
-                        <tr>
-                            <td>Peagravel <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>24.6</td>
-                            <td class='qty-cell'>34.2</td>
-                            <td class='qty-cell'>37.6</td>
-                            <td class='qty-cell'>37.6</td>
-                            <td class='qty-cell'>37.4</td>
-                        </tr>
-                        <tr class='total-row'>
-                            <td><strong>TOTAL</strong></td>
-                            <td class='qty-cell'><strong>228.6</strong></td>
-                            <td class='qty-cell'><strong>181.1</strong></td>
-                            <td class='qty-cell'><strong>173.4</strong></td>
-                            <td class='qty-cell'><strong>190.3</strong></td>
-                            <td class='qty-cell'><strong>180.6</strong></td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
-        <!-- ASPHALT RAW MATERIALS SECTION -->
-        <div class="material-section">
-            <div class="section-title asphalt">🛣️ ASPHALT RAW MATERIALS</div>
-            
-            <div class="plant-subsection">
-                <div class="plant-header asphalt">ASPHALT PLANT</div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Raw Material</th>
-                                <th>9/29</th>
-                                <th>9/30</th>
-                                <th>10/1</th>
-                                <th>10/2</th>
-                                <th>10/3</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <td>Dust <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>71.0</td>
-                            <td class='qty-cell'>4.2</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell'>154.8</td>
-                            <td class='qty-cell'>300.3</td>
-                        </tr>
-                        <tr>
-                            <td>Man Sand <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>56.2</td>
-                            <td class='qty-cell'>3.3</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell'>123.8</td>
-                            <td class='qty-cell'>240.2</td>
-                        </tr>
-                        <tr>
-                            <td>3/8 <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>31.0</td>
-                            <td class='qty-cell'>2.6</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell'>97.3</td>
-                            <td class='qty-cell'>188.8</td>
-                        </tr>
-                        <tr>
-                            <td>1/2 <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell'>14.5</td>
-                            <td class='qty-cell'>1.8</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell'>66.3</td>
-                            <td class='qty-cell'>128.7</td>
-                        </tr>
-                        <tr>
-                            <td>3/4 <span style='font-size: 0.85em; color: #666;'>(TONS)</span></td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                            <td class='qty-cell empty-cell'>-</td>
-                        </tr>
-                        <tr class='total-row'>
-                            <td><strong>TOTAL</strong></td>
-                            <td class='qty-cell'><strong>172.6</strong></td>
-                            <td class='qty-cell'><strong>11.9</strong></td>
-                            <td class='qty-cell empty-cell'><strong>-</strong></td>
-                            <td class='qty-cell'><strong>442.1</strong></td>
-                            <td class='qty-cell'><strong>857.9</strong></td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
-        <div class="note">
-            <strong>📝 Notes:</strong>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-                <li>All quantities shown in TONS</li>
-                <li>Concrete raw materials calculated from mix recipes (lbs/CY converted to tons)</li>
-                <li>Asphalt raw materials calculated after removing RAP content from total tonnage</li>
-                <li>Daily totals represent sum of all raw materials for that plant/day</li>
-                <li>Mix recipes based on concmixesrecipe.txt data with estimated values where specific recipes not available</li>
-                <li>Asphalt product ingredients based on Asphalt Product Ingredients document</li>
-            </ul>
-        </div>
-    </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<RawMaterialDemand />);
+    </script>
 </body>
 </html>

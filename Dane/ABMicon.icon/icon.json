@@ -1,21 +1,19 @@
 {
   "fill" : {
-    "automatic-gradient" : "extended-gray:0.46110,1.00000"
+    "automatic-gradient" : "extended-gray:0.14641,1.00000"
   },
   "groups" : [
     {
       "layers" : [
         {
-          "blend-mode" : "hard-light",
-          "fill" : "automatic",
-          "image-name" : "ABMICONrdy2.png",
-          "name" : "ABMICONrdy2",
-          "opacity" : 1,
+          "blend-mode" : "normal",
+          "image-name" : "ABMICONrdy3.png",
+          "name" : "ABMICONrdy3",
           "position" : {
             "scale" : 0.61,
             "translation-in-points" : [
               0,
-              -77.5078125
+              -82
             ]
           }
         }
