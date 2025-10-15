@@ -178,6 +178,7 @@ struct DashboardListItemView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                        .opacity(0.4)
                 } else {
                     Rectangle()
                         .fill(
@@ -298,6 +299,7 @@ struct GlassmorphicDashboardCard: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 40, height: 40)
+                            .opacity(0.4)
                     } else {
                         Image(systemName: "app.fill")
                             .font(.system(size: 30))
@@ -422,6 +424,7 @@ struct DashboardCard: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 60, height: 60)
+                        .opacity(0.4)
                 } else {
                     // Fallback if image not found
                     Image(systemName: "app.fill")
