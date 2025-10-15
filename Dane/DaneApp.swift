@@ -19,6 +19,14 @@ struct DaneApp: App {
                 .onAppear {
                     // Start background refresh when app launches
                     dataManager.startBackgroundRefresh()
+
+                    #if targetEnvironment(macCatalyst)
+                    // Set larger window size for Mac (2x scale)
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        windowScene.sizeRestrictions?.minimumSize = CGSize(width: 800, height: 1200)
+                        windowScene.sizeRestrictions?.maximumSize = CGSize(width: 1600, height: 2400)
+                    }
+                    #endif
                 }
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                     dataManager.handleAppDidBecomeActive()
@@ -27,5 +35,8 @@ struct DaneApp: App {
                     dataManager.handleAppWillResignActive()
                 }
         }
+        #if targetEnvironment(macCatalyst)
+        .defaultSize(width: 1000, height: 1600)
+        #endif
     }
 }
