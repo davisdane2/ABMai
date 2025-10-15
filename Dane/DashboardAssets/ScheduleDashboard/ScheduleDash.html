@@ -329,8 +329,9 @@
             const workPointOrder = ['Mixer', 'Bottoms', 'Utility', 'Asphalt', 'Brentwood', 'Yard', 'Dispatch', 'Shop', 'Office', 'Unassigned'];
 
             const sortedSchedules = schedules.sort((a, b) => {
-                const workPointA = a.work_point || 'Unassigned';
-                const workPointB = b.work_point || 'Unassigned';
+                // Normalize null, undefined, empty string to 'Unassigned'
+                const workPointA = (a.work_point && a.work_point.trim()) ? a.work_point : 'Unassigned';
+                const workPointB = (b.work_point && b.work_point.trim()) ? b.work_point : 'Unassigned';
 
                 const indexA = workPointOrder.indexOf(workPointA);
                 const indexB = workPointOrder.indexOf(workPointB);
@@ -380,7 +381,8 @@
             const notes = schedule.raw_data?.notes || '';
             const truck = schedule.truck_name ? `<span class="truck-badge">${schedule.truck_name}</span>` : '<span class="no-truck">Not assigned</span>';
             const time = schedule.start_time ? formatTime(schedule.start_time) : 'Not scheduled';
-            const workPoint = schedule.work_point || 'Unassigned';
+            // Normalize null, undefined, empty string to 'Unassigned'
+            const workPoint = (schedule.work_point && schedule.work_point.trim()) ? schedule.work_point : 'Unassigned';
 
             return `
                 <tr>
