@@ -131,15 +131,17 @@ class SupabaseClient {
 
     /// Fetch concrete demand data
     func fetchConcreteDemand() async throws -> [ConcreteDemand] {
-        return try await fetch(endpoint: "concrete_demand_weekly", query: "?select=*&order=week_number.desc")
+        return try await fetch(endpoint: "concrete_demand", query: "?select=*&order=ship_date.desc")
     }
 
-    /// Fetch weekly demand for specific product type
-    func fetchWeeklyDemand(productType: String? = nil) async throws -> [WeeklyDemand] {
-        let query = productType != nil
-            ? "?product_type=eq.\(productType!)&select=*&order=week_number.desc"
-            : "?select=*&order=week_number.desc"
-        return try await fetch(endpoint: "weekly_demand", query: query)
+    /// Fetch raw material demands
+    func fetchRawMaterialDemands() async throws -> [RawMaterialDemand] {
+        return try await fetch(endpoint: "raw_material_demands", query: "?select=*&order=demand_date.desc")
+    }
+
+    /// Fetch asphalt demand
+    func fetchAsphaltDemand() async throws -> [AsphaltDemand] {
+        return try await fetch(endpoint: "asphalt_demand", query: "?select=*&order=ship_date.desc")
     }
 
     /// Fetch driver schedules
@@ -158,14 +160,16 @@ class SupabaseClient {
         async let chameleon = try? fetchChameleonInventory()
         async let admix = try? fetchAdmixInventory()
         async let concrete = try? fetchConcreteDemand()
-        async let weekly = try? fetchWeeklyDemand()
+        async let asphalt = try? fetchAsphaltDemand()
+        async let rawMaterials = try? fetchRawMaterialDemands()
         async let schedule = try? fetchDriverSchedule()
 
         return DashboardDataSnapshot(
             chameleonInventory: await chameleon,
             admixInventory: await admix,
             concreteDemand: await concrete,
-            weeklyDemand: await weekly,
+            asphaltDemand: await asphalt,
+            rawMaterialDemands: await rawMaterials,
             driverSchedule: await schedule,
             fetchedAt: Date()
         )

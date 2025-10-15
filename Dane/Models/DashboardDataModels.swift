@@ -73,44 +73,74 @@ struct AdmixInventory: DashboardData, Codable {
 
 // MARK: - Demand Models
 
-struct WeeklyDemand: DashboardData, Codable {
-    let productType: String
-    let weekNumber: Int
-    let year: Int
-    let plant: String
-    let demandQuantity: Double
-    let unit: String
+// Raw Material Demands
+struct RawMaterialDemand: DashboardData, Codable {
+    let plantName: String
+    let materialCategory: String
+    let materialName: String
+    let demandDate: String
+    let quantityTons: Double
+    let createdAt: String?
     let updatedAt: String?
     let lastUpdated: Date
 
     enum CodingKeys: String, CodingKey {
-        case productType = "product_type"
-        case weekNumber = "week_number"
-        case year
-        case plant
-        case demandQuantity = "demand_quantity"
-        case unit
+        case plantName = "plant_name"
+        case materialCategory = "material_category"
+        case materialName = "material_name"
+        case demandDate = "demand_date"
+        case quantityTons = "quantity_tons"
+        case createdAt = "created_at"
         case updatedAt = "updated_at"
         case lastUpdated = "last_updated"
     }
 }
 
-struct ConcreteDemand: DashboardData, Codable {
-    let weekNumber: Int
-    let year: Int
-    let plant: String
-    let mixType: String?
-    let totalYards: Double
-    let updatedAt: String?
+// Asphalt Demand
+struct AsphaltDemand: DashboardData, Codable {
+    let shipDate: String
+    let plantId: Int
+    let plantDescription: String
+    let productNumber: String
+    let productDescription: String
+    let quantity: Double
+    let unit: String
+    let fetchedAt: String?
     let lastUpdated: Date
 
     enum CodingKeys: String, CodingKey {
-        case weekNumber = "week_number"
-        case year
-        case plant
-        case mixType = "mix_type"
-        case totalYards = "total_yards"
-        case updatedAt = "updated_at"
+        case shipDate = "ship_date"
+        case plantId = "plant_id"
+        case plantDescription = "plant_description"
+        case productNumber = "product_number"
+        case productDescription = "product_description"
+        case quantity
+        case unit
+        case fetchedAt = "fetched_at"
+        case lastUpdated = "last_updated"
+    }
+}
+
+struct ConcreteDemand: DashboardData, Codable {
+    let shipDate: String
+    let plantId: Int
+    let plantDescription: String
+    let productNumber: String
+    let productDescription: String
+    let quantity: Double
+    let unit: String
+    let fetchedAt: String?
+    let lastUpdated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case shipDate = "ship_date"
+        case plantId = "plant_id"
+        case plantDescription = "plant_description"
+        case productNumber = "product_number"
+        case productDescription = "product_description"
+        case quantity
+        case unit
+        case fetchedAt = "fetched_at"
         case lastUpdated = "last_updated"
     }
 }
@@ -118,23 +148,31 @@ struct ConcreteDemand: DashboardData, Codable {
 // MARK: - Operations Models
 
 struct DriverSchedule: DashboardData, Codable {
-    let driverName: String
-    let startTime: String
+    let driverName: String?
+    let driverId: String?
+    let scheduleDate: String?
+    let startTime: String?
     let endTime: String?
-    let route: String?
-    let truckNumber: String?
-    let scheduleDate: String
-    let notes: String?
+    let routeName: String?
+    let vehicleId: String?
+    let workPoint: String?
+    let truckName: String?
+    let status: String?
+    let active: Bool?
     let lastUpdated: Date
 
     enum CodingKeys: String, CodingKey {
         case driverName = "driver_name"
+        case driverId = "driver_id"
+        case scheduleDate = "schedule_date"
         case startTime = "start_time"
         case endTime = "end_time"
-        case route
-        case truckNumber = "truck_number"
-        case scheduleDate = "schedule_date"
-        case notes
+        case routeName = "route_name"
+        case vehicleId = "vehicle_id"
+        case workPoint = "work_point"
+        case truckName = "truck_name"
+        case status
+        case active
         case lastUpdated = "last_updated"
     }
 }
@@ -145,7 +183,8 @@ struct DashboardDataSnapshot: Codable {
     let chameleonInventory: [ChameleonInventory]?
     let admixInventory: [AdmixInventory]?
     let concreteDemand: [ConcreteDemand]?
-    let weeklyDemand: [WeeklyDemand]?
+    let asphaltDemand: [AsphaltDemand]?
+    let rawMaterialDemands: [RawMaterialDemand]?
     let driverSchedule: [DriverSchedule]?
     let fetchedAt: Date
 
@@ -153,7 +192,8 @@ struct DashboardDataSnapshot: Codable {
         case chameleonInventory = "chameleon_inventory"
         case admixInventory = "admix_inventory"
         case concreteDemand = "concrete_demand"
-        case weeklyDemand = "weekly_demand"
+        case asphaltDemand = "asphalt_demand"
+        case rawMaterialDemands = "raw_material_demands"
         case driverSchedule = "driver_schedule"
         case fetchedAt = "fetched_at"
     }
@@ -162,14 +202,16 @@ struct DashboardDataSnapshot: Codable {
         chameleonInventory: [ChameleonInventory]? = nil,
         admixInventory: [AdmixInventory]? = nil,
         concreteDemand: [ConcreteDemand]? = nil,
-        weeklyDemand: [WeeklyDemand]? = nil,
+        asphaltDemand: [AsphaltDemand]? = nil,
+        rawMaterialDemands: [RawMaterialDemand]? = nil,
         driverSchedule: [DriverSchedule]? = nil,
         fetchedAt: Date = Date()
     ) {
         self.chameleonInventory = chameleonInventory
         self.admixInventory = admixInventory
         self.concreteDemand = concreteDemand
-        self.weeklyDemand = weeklyDemand
+        self.asphaltDemand = asphaltDemand
+        self.rawMaterialDemands = rawMaterialDemands
         self.driverSchedule = driverSchedule
         self.fetchedAt = fetchedAt
     }

@@ -28,7 +28,8 @@ class DashboardDataManager: ObservableObject {
     @Published var chameleonInventory: [ChameleonInventory] = []
     @Published var admixInventory: [AdmixInventory] = []
     @Published var concreteDemand: [ConcreteDemand] = []
-    @Published var weeklyDemand: [WeeklyDemand] = []
+    @Published var asphaltDemand: [AsphaltDemand] = []
+    @Published var rawMaterialDemands: [RawMaterialDemand] = []
     @Published var driverSchedule: [DriverSchedule] = []
 
     // MARK: - Configuration
@@ -121,8 +122,11 @@ class DashboardDataManager: ObservableObject {
         if let concrete = snapshot.concreteDemand {
             self.concreteDemand = concrete
         }
-        if let weekly = snapshot.weeklyDemand {
-            self.weeklyDemand = weekly
+        if let asphalt = snapshot.asphaltDemand {
+            self.asphaltDemand = asphalt
+        }
+        if let rawMaterials = snapshot.rawMaterialDemands {
+            self.rawMaterialDemands = rawMaterials
         }
         if let schedule = snapshot.driverSchedule {
             self.driverSchedule = schedule
@@ -135,7 +139,8 @@ class DashboardDataManager: ObservableObject {
         if snapshot.chameleonInventory == nil &&
            snapshot.admixInventory == nil &&
            snapshot.concreteDemand == nil &&
-           snapshot.weeklyDemand == nil &&
+           snapshot.asphaltDemand == nil &&
+           snapshot.rawMaterialDemands == nil &&
            snapshot.driverSchedule == nil {
             print("⚠️ No data fetched, loading cached data")
             loadCachedData()
@@ -184,8 +189,11 @@ class DashboardDataManager: ObservableObject {
             if let concrete = snapshot.concreteDemand {
                 self.concreteDemand = concrete
             }
-            if let weekly = snapshot.weeklyDemand {
-                self.weeklyDemand = weekly
+            if let asphalt = snapshot.asphaltDemand {
+                self.asphaltDemand = asphalt
+            }
+            if let rawMaterials = snapshot.rawMaterialDemands {
+                self.rawMaterialDemands = rawMaterials
             }
             if let schedule = snapshot.driverSchedule {
                 self.driverSchedule = schedule
@@ -228,8 +236,12 @@ class DashboardDataManager: ObservableObject {
         return encodeToJSON(concreteDemand)
     }
 
-    func exportWeeklyDemandJSON() -> String? {
-        return encodeToJSON(weeklyDemand)
+    func exportRawMaterialDemandsJSON() -> String? {
+        return encodeToJSON(rawMaterialDemands)
+    }
+
+    func exportAsphaltDemandJSON() -> String? {
+        return encodeToJSON(asphaltDemand)
     }
 
     func exportDriverScheduleJSON() -> String? {

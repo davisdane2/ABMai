@@ -34,7 +34,7 @@
 
                 try {
                     const { data: fetchedData, error: fetchError } = await supabaseClient
-                        .from('raw_material_demand')
+                        .from('raw_material_demands')
                         .select('*')
                         .order('demand_date', { ascending: true });
 
