@@ -27,6 +27,7 @@
             const [loading, setLoading] = useState(true);
             const [error, setError] = useState(null);
             const [lastUpdated, setLastUpdated] = useState(null);
+            const [dataFetchedAt, setDataFetchedAt] = useState(null);
 
             const fetchData = async () => {
                 setLoading(true);
@@ -42,7 +43,16 @@
 
                     setData(fetchedData || []);
                     setLastUpdated(new Date());
-                    console.log('✅ Data loaded:', fetchedData?.length, 'records');
+
+                    // Find the most recent created_at timestamp
+                    if (fetchedData && fetchedData.length > 0) {
+                        const mostRecentCreatedAt = fetchedData.reduce((latest, record) => {
+                            const recordDate = new Date(record.created_at);
+                            return recordDate > latest ? recordDate : latest;
+                        }, new Date(0));
+                        setDataFetchedAt(mostRecentCreatedAt);
+                        console.log('✅ Data loaded:', fetchedData?.length, 'records. Most recent created_at:', mostRecentCreatedAt);
+                    }
                 } catch (err) {
                     console.error('❌ Error fetching data:', err);
                     setError(err.message);
@@ -156,9 +166,22 @@
                             </button>
                         </div>
 
-                        {lastUpdated && (
-                            <div className="text-sm text-gray-600 mb-6">
-                                Last updated: {lastUpdated.toLocaleString()}
+                        {dataFetchedAt && (
+                            <div className="text-sm text-gray-600 mb-6 flex items-center gap-2">
+                                <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                <span>
+                                    Data fetched: {dataFetchedAt.toLocaleString('en-US', {
+                                        timeZone: 'America/Los_Angeles',
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true
+                                    })} PT
+                                </span>
                             </div>
                         )}
 
