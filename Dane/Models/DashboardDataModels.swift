@@ -159,6 +159,7 @@ struct DriverSchedule: DashboardData, Codable {
     let truckName: String?
     let status: String?
     let active: Bool?
+    let fetchedAt: String?
     let lastUpdated: Date
 
     enum CodingKeys: String, CodingKey {
@@ -173,6 +174,7 @@ struct DriverSchedule: DashboardData, Codable {
         case truckName = "truck_name"
         case status
         case active
+        case fetchedAt = "fetched_at"
         case lastUpdated = "last_updated"
     }
 }

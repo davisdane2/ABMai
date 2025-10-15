@@ -33,7 +33,7 @@ class DashboardDataManager: ObservableObject {
     @Published var driverSchedule: [DriverSchedule] = []
 
     // MARK: - Configuration
-    private let refreshInterval: TimeInterval = 60 // 60 seconds (1 minute)
+    private let refreshInterval: TimeInterval = 500 // Long Interval for Refreshes as these are only updated every few hours
     private let client: SupabaseClient
     private var refreshTimer: Timer?
     private var isBackgroundRefreshEnabled = false
