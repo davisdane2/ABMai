@@ -247,6 +247,27 @@ struct DashboardDetailView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // "Recently Updated" banner
+            if dashboard.showRecentlyUpdatedBadge {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 14, weight: .bold))
+                    Text("Recently Updated in v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.42")")
+                        .font(.system(size: 14, weight: .semibold))
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    LinearGradient(
+                        colors: [Color.green.opacity(0.8), Color.blue.opacity(0.8)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+            }
+
             // Navigation toolbar
             if canGoBack || canGoForward {
                 HStack(spacing: 20) {

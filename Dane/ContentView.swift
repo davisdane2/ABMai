@@ -211,6 +211,31 @@ struct DashboardListItemView: View {
         }
         .clipped()
         .cornerRadius(Constants.cornerRadius)
+        .overlay(alignment: .topTrailing) {
+            // "Recently Updated" badge
+            if dashboard.showRecentlyUpdatedBadge {
+                HStack(spacing: 4) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 10, weight: .bold))
+                    Text("NEW")
+                        .font(.system(size: 10, weight: .bold))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.green, Color.blue],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                )
+                .padding(8)
+            }
+        }
         .overlay(alignment: .bottom) {
             VStack(spacing: 4) {
                 Text(dashboard.name)
@@ -292,6 +317,25 @@ struct GlassmorphicDashboardCard: View {
                         Circle()
                             .stroke(Color.white.opacity(Constants.glassStrokeOpacity), lineWidth: 1)
                     )
+
+                // "Recently Updated" small badge on icon
+                if dashboard.showRecentlyUpdatedBadge {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.green, Color.blue],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 20, height: 20)
+                        .overlay(
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                        )
+                        .offset(x: 25, y: -25)
+                }
 
                 if dashboard.icon.hasSuffix(".png") || dashboard.icon.hasSuffix(".jpg") {
                     if let uiImage = loadImageFromBundle(named: dashboard.icon) {

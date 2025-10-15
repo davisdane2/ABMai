@@ -14,6 +14,17 @@ struct Dashboard: Identifiable {
     let icon: String
     let htmlPath: String
     let category: DashboardCategory
+    let recentlyUpdatedInVersion: String? // Version when dashboard was updated (e.g., "1.42")
+
+    // Helper to check if "Recently Updated" badge should show
+    var showRecentlyUpdatedBadge: Bool {
+        guard let updateVersion = recentlyUpdatedInVersion,
+              let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+            return false
+        }
+        // Show badge if update version matches current version
+        return updateVersion == currentVersion
+    }
 }
 
 enum DashboardCategory: String, CaseIterable {
@@ -32,59 +43,68 @@ extension Dashboard {
             description: "Chameleon Inventory for BW & Pit",
             icon: "🦎",
             htmlPath: "chameleon.html",
-            category: .inventory
+            category: .inventory,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "Admix Inventory",
             description: "Admixture (Dry Goods) Inventory for Bw & Pit",
             icon: "cemexlogo.png",
             htmlPath: "Admix.html",
-            category: .inventory
+            category: .inventory,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "Inventory Submission",
             description: "Update Inventories For BW & Pit + RAP area",
             icon: "deister.png",
             htmlPath: "InventorySubmission.html",
-            category: .inventory
+            category: .inventory,
+            recentlyUpdatedInVersion: nil
         ),
 
         // Weekly Demand Dashboards
+        Dashboard(
+            name: "All Raw Material Demands",
+            description: "Combined Raw Material Demands",
+            icon: "rawmatlogo.png",
+            htmlPath: "RawWeeklyComb.html",
+            category: .demand,
+            recentlyUpdatedInVersion: "1.42"
+        ),
         Dashboard(
             name: "Concrete Demand",
             description: "Weekly Concrete Demand",
             icon: "coneco.png",
             htmlPath: "ConcWeekly.html",
-            category: .demand
+            category: .demand,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "Asphalt Demand",
             description: "Weekly Asphalt Demand",
             icon: "astelogo.png",
             htmlPath: "AsphaltWeekly.html",
-            category: .demand
+            category: .demand,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "AC Oil Demand",
             description: "Weekly AC OIL Demand",
             icon: "acoillogo.png",
             htmlPath: "ACoilWeekly.html",
-            category: .demand
+            category: .demand,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "Powder Demand",
             description: "Weekly Cement/Slag/Flyash Demand",
             icon: "cementlogo.png",
             htmlPath: "PowderWeekly.html",
-            category: .demand
+            category: .demand,
+            recentlyUpdatedInVersion: nil
         ),
-        Dashboard(
-            name: "All Raw Material Demands",
-            description: "Combined Raw Material Demands",
-            icon: "rawmatlogo.png",
-            htmlPath: "RawWeeklyComb.html",
-            category: .demand
-        ),
+       
 
         // Operations
         Dashboard(
@@ -92,7 +112,8 @@ extension Dashboard {
             description: "Driver Start Times & Schedule",
             icon: "dflogo.png",
             htmlPath: "ScheduleDash.html",
-            category: .operations
+            category: .operations,
+            recentlyUpdatedInVersion: "1.42"
         ),
 
         // AI Tools
@@ -101,14 +122,16 @@ extension Dashboard {
             description: "AI-powered Concrete Quick-Quote",
             icon: "zapierchat.png",
             htmlPath: "ConcQuoteBot.html",
-            category: .ai
+            category: .ai,
+            recentlyUpdatedInVersion: nil
         ),
         Dashboard(
             name: "Mix Design Assist",
             description: "AI Mix Design Selector",
             icon: "mixlogodesign.png",
             htmlPath: "MixDesignAI.html",
-            category: .ai
+            category: .ai,
+            recentlyUpdatedInVersion: nil
         ),
 
         // Plant Control
@@ -117,7 +140,8 @@ extension Dashboard {
             description: "Plant Control Interface for CHASCO",
             icon: "chascologo.png",
             htmlPath: "index.html",
-            category: .control
+            category: .control,
+            recentlyUpdatedInVersion: nil
         )
     ]
 
