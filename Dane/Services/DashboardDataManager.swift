@@ -39,9 +39,15 @@ class DashboardDataManager: ObservableObject {
 
     // MARK: - Initialization
 
-    init(client: SupabaseClient = .shared) {
-        self.client = client
+    init() {
+        self.client = SupabaseClient.shared
         print("📊 DashboardDataManager initialized")
+    }
+
+    // Dependency injection initializer for testing
+    init(client: SupabaseClient) {
+        self.client = client
+        print("📊 DashboardDataManager initialized (with custom client)")
     }
 
     // MARK: - Public API
@@ -97,45 +103,44 @@ class DashboardDataManager: ObservableObject {
             isLoading = true
         }
 
-        do {
-            // Parallel fetch all endpoints
-            let snapshot = await client.fetchAllDashboardData()
+        // Parallel fetch all endpoints
+        let snapshot = await client.fetchAllDashboardData()
 
-            // Update published properties
-            self.dataSnapshot = snapshot
-            self.lastRefreshDate = Date()
-            self.error = nil
+        // Update published properties
+        self.dataSnapshot = snapshot
+        self.lastRefreshDate = Date()
+        self.error = nil
 
-            // Update individual arrays
-            if let chameleon = snapshot.chameleonInventory {
-                self.chameleonInventory = chameleon
-            }
-            if let admix = snapshot.admixInventory {
-                self.admixInventory = admix
-            }
-            if let concrete = snapshot.concreteDemand {
-                self.concreteDemand = concrete
-            }
-            if let weekly = snapshot.weeklyDemand {
-                self.weeklyDemand = weekly
-            }
-            if let schedule = snapshot.driverSchedule {
-                self.driverSchedule = schedule
-            }
+        // Update individual arrays
+        if let chameleon = snapshot.chameleonInventory {
+            self.chameleonInventory = chameleon
+        }
+        if let admix = snapshot.admixInventory {
+            self.admixInventory = admix
+        }
+        if let concrete = snapshot.concreteDemand {
+            self.concreteDemand = concrete
+        }
+        if let weekly = snapshot.weeklyDemand {
+            self.weeklyDemand = weekly
+        }
+        if let schedule = snapshot.driverSchedule {
+            self.driverSchedule = schedule
+        }
 
-            // Cache to UserDefaults for offline access
-            cacheSnapshot(snapshot)
+        // Cache to UserDefaults for offline access
+        cacheSnapshot(snapshot)
 
-            if !silent {
-                print("✅ Data refresh complete - \(snapshot.fetchedAt.formatted())")
-            }
-
-        } catch let supabaseError as SupabaseError {
-            self.error = supabaseError
-            print("❌ Data fetch error: \(supabaseError.localizedDescription)")
-
-            // Try to load cached data
+        // Check if we have any data, otherwise load cached
+        if snapshot.chameleonInventory == nil &&
+           snapshot.admixInventory == nil &&
+           snapshot.concreteDemand == nil &&
+           snapshot.weeklyDemand == nil &&
+           snapshot.driverSchedule == nil {
+            print("⚠️ No data fetched, loading cached data")
             loadCachedData()
+        } else if !silent {
+            print("✅ Data refresh complete - \(snapshot.fetchedAt.formatted())")
         }
 
         if !silent {
@@ -247,7 +252,9 @@ class DashboardDataManager: ObservableObject {
     // MARK: - Lifecycle Management
 
     deinit {
-        stopBackgroundRefresh()
+        // Timer cleanup doesn't need main actor isolation
+        refreshTimer?.invalidate()
+        refreshTimer = nil
     }
 }
 
