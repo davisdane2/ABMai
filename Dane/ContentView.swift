@@ -12,8 +12,28 @@ struct ContentView: View {
     @State private var toastMessage = ""
 
     var body: some View {
-        NavigationStack {
-            ZStack {
+        Group {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    navigationContent
+                }
+            } else {
+                NavigationView {
+                    navigationContent
+                }
+                .navigationViewStyle(.stack)
+            }
+        }
+        .onAppear {
+            // Show welcome toast
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                showToastMessage("Welcome to ABM.ai Dashboards!")
+            }
+        }
+    }
+
+    private var navigationContent: some View {
+        ZStack {
                 // Background Gradient
                 LinearGradient(
                     colors: [
@@ -102,16 +122,9 @@ struct ContentView: View {
                             .padding(.bottom, 100)
                     }
                 }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarHidden(true)
         }
-        .onAppear {
-            // Show welcome toast
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showToastMessage("Welcome to ABM.ai Dashboards!")
-            }
-        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarHidden(true)
     }
     
     private func showToastMessage(_ message: String) {
