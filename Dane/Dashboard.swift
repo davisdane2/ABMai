@@ -70,7 +70,7 @@ extension Dashboard {
             icon: "rawmatlogo.png",
             htmlPath: "RawWeeklyComb.html",
             category: .demand,
-            recentlyUpdatedInVersion: "1.42"
+            recentlyUpdatedInVersion: "1.50"
         ),
         Dashboard(
             name: "Concrete Demand",
@@ -78,7 +78,7 @@ extension Dashboard {
             icon: "coneco.png",
             htmlPath: "ConcWeekly.html",
             category: .demand,
-            recentlyUpdatedInVersion: nil
+            recentlyUpdatedInVersion: "1.50"
         ),
         Dashboard(
             name: "Asphalt Demand",
@@ -86,7 +86,7 @@ extension Dashboard {
             icon: "astelogo.png",
             htmlPath: "AsphaltWeekly.html",
             category: .demand,
-            recentlyUpdatedInVersion: nil
+            recentlyUpdatedInVersion: "1.50"
         ),
         Dashboard(
             name: "AC Oil Demand",
@@ -94,7 +94,7 @@ extension Dashboard {
             icon: "acoillogo.png",
             htmlPath: "ACoilWeekly.html",
             category: .demand,
-            recentlyUpdatedInVersion: nil
+            recentlyUpdatedInVersion: "1.50"
         ),
         Dashboard(
             name: "Powder Demand",
@@ -102,7 +102,7 @@ extension Dashboard {
             icon: "cementlogo.png",
             htmlPath: "PowderWeekly.html",
             category: .demand,
-            recentlyUpdatedInVersion: nil
+            recentlyUpdatedInVersion: "1.50"
         ),
        
 
