@@ -157,6 +157,16 @@ class SupabaseClient {
         return try await fetch(endpoint: "powder_demand", query: "?select=*&order=ship_date.asc")
     }
 
+    /// Fetch AC content (oil percentages for asphalt products)
+    func fetchACContent() async throws -> [ACContent] {
+        return try await fetch(endpoint: "ac_content", query: "?select=*")
+    }
+
+    /// Fetch AC incoming orders (delivery tracking)
+    func fetchACIncomingOrders() async throws -> [ACIncomingOrder] {
+        return try await fetch(endpoint: "ac_incoming_orders", query: "?select=*&order=estimated_delivery_date.asc")
+    }
+
     // MARK: - Batch Fetch (Parallel)
 
     /// Fetch all dashboard data in parallel for maximum efficiency
@@ -169,6 +179,8 @@ class SupabaseClient {
         async let rawMaterials = try? fetchRawMaterialDemands()
         async let powder = try? fetchPowderDemand()
         async let schedule = try? fetchDriverSchedule()
+        async let acContent = try? fetchACContent()
+        async let acOrders = try? fetchACIncomingOrders()
 
         return DashboardDataSnapshot(
             chameleonInventory: await chameleon,
@@ -178,6 +190,8 @@ class SupabaseClient {
             rawMaterialDemands: await rawMaterials,
             powderDemand: await powder,
             driverSchedule: await schedule,
+            acContent: await acContent,
+            acIncomingOrders: await acOrders,
             fetchedAt: Date()
         )
     }

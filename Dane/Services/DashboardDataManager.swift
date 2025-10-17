@@ -32,6 +32,8 @@ class DashboardDataManager: ObservableObject {
     @Published var rawMaterialDemands: [RawMaterialDemand] = []
     @Published var powderDemand: [PowderDemand] = []
     @Published var driverSchedule: [DriverSchedule] = []
+    @Published var acContent: [ACContent] = []
+    @Published var acIncomingOrders: [ACIncomingOrder] = []
 
     // MARK: - Configuration
     private let refreshInterval: TimeInterval = 500 // Long Interval for Refreshes as these are only updated every few hours
@@ -135,6 +137,12 @@ class DashboardDataManager: ObservableObject {
         if let schedule = snapshot.driverSchedule {
             self.driverSchedule = schedule
         }
+        if let acContent = snapshot.acContent {
+            self.acContent = acContent
+        }
+        if let acOrders = snapshot.acIncomingOrders {
+            self.acIncomingOrders = acOrders
+        }
 
         // Cache to UserDefaults for offline access
         cacheSnapshot(snapshot)
@@ -146,7 +154,9 @@ class DashboardDataManager: ObservableObject {
            snapshot.asphaltDemand == nil &&
            snapshot.rawMaterialDemands == nil &&
            snapshot.powderDemand == nil &&
-           snapshot.driverSchedule == nil {
+           snapshot.driverSchedule == nil &&
+           snapshot.acContent == nil &&
+           snapshot.acIncomingOrders == nil {
             print("⚠️ No data fetched, loading cached data")
             loadCachedData()
         } else if !silent {
@@ -206,6 +216,12 @@ class DashboardDataManager: ObservableObject {
             if let schedule = snapshot.driverSchedule {
                 self.driverSchedule = schedule
             }
+            if let acContent = snapshot.acContent {
+                self.acContent = acContent
+            }
+            if let acOrders = snapshot.acIncomingOrders {
+                self.acIncomingOrders = acOrders
+            }
 
             print("📦 Loaded cached data from \(snapshot.fetchedAt.formatted())")
         } catch {
@@ -258,6 +274,14 @@ class DashboardDataManager: ObservableObject {
 
     func exportPowderDemandJSON() -> String? {
         return encodeToJSON(powderDemand)
+    }
+
+    func exportACContentJSON() -> String? {
+        return encodeToJSON(acContent)
+    }
+
+    func exportACIncomingOrdersJSON() -> String? {
+        return encodeToJSON(acIncomingOrders)
     }
 
     private func encodeToJSON<T: Encodable>(_ data: T) -> String? {

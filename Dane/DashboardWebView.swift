@@ -20,6 +20,49 @@ struct DashboardWebView: UIViewRepresentable {
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
 
+        // Add console message handler
+        let contentController = WKUserContentController()
+        contentController.add(context.coordinator, name: "consoleLog")
+
+        // Inject console capture script
+        let consoleScript = WKUserScript(
+            source: """
+            (function() {
+                const originalLog = console.log;
+                const originalError = console.error;
+                const originalWarn = console.warn;
+
+                console.log = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'log',
+                        message: args.join(' ')
+                    });
+                    originalLog.apply(console, args);
+                };
+
+                console.error = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'error',
+                        message: args.join(' ')
+                    });
+                    originalError.apply(console, args);
+                };
+
+                console.warn = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'warn',
+                        message: args.join(' ')
+                    });
+                    originalWarn.apply(console, args);
+                };
+            })();
+            """,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: false
+        )
+        contentController.addUserScript(consoleScript)
+        config.userContentController = contentController
+
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -58,12 +101,22 @@ struct DashboardWebView: UIViewRepresentable {
         Coordinator()
     }
 
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var currentFileName: String = ""
         var wasActive: Bool = true
         var hasLoaded = false
         private var timerIDs: [Int] = []
         private var lastInjectedData: String?
+
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            if message.name == "consoleLog",
+               let body = message.body as? [String: String],
+               let level = body["level"],
+               let logMessage = body["message"] {
+                let prefix = level == "error" ? "🔴 [JS Error]" : level == "warn" ? "🟡 [JS Warn]" : "🔵 [JS Log]"
+                print("\(prefix) \(logMessage)")
+            }
+        }
 
         func loadHTML(in webView: WKWebView, fileName: String) {
             // Prevent reloading the same content
@@ -357,6 +410,49 @@ struct NavigatableDashboardWebView: UIViewRepresentable {
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
 
+        // Add console message handler
+        let contentController = WKUserContentController()
+        contentController.add(context.coordinator, name: "consoleLog")
+
+        // Inject console capture script
+        let consoleScript = WKUserScript(
+            source: """
+            (function() {
+                const originalLog = console.log;
+                const originalError = console.error;
+                const originalWarn = console.warn;
+
+                console.log = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'log',
+                        message: args.join(' ')
+                    });
+                    originalLog.apply(console, args);
+                };
+
+                console.error = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'error',
+                        message: args.join(' ')
+                    });
+                    originalError.apply(console, args);
+                };
+
+                console.warn = function(...args) {
+                    window.webkit.messageHandlers.consoleLog.postMessage({
+                        level: 'warn',
+                        message: args.join(' ')
+                    });
+                    originalWarn.apply(console, args);
+                };
+            })();
+            """,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: false
+        )
+        contentController.addUserScript(consoleScript)
+        config.userContentController = contentController
+
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -403,7 +499,7 @@ struct NavigatableDashboardWebView: UIViewRepresentable {
         NavigationCoordinator(canGoBack: $canGoBack, canGoForward: $canGoForward)
     }
 
-    class NavigationCoordinator: NSObject, WKNavigationDelegate {
+    class NavigationCoordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var currentFileName: String = ""
         var wasActive: Bool = true
         var hasLoaded = false
@@ -414,6 +510,16 @@ struct NavigatableDashboardWebView: UIViewRepresentable {
         init(canGoBack: Binding<Bool>, canGoForward: Binding<Bool>) {
             _canGoBack = canGoBack
             _canGoForward = canGoForward
+        }
+
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            if message.name == "consoleLog",
+               let body = message.body as? [String: String],
+               let level = body["level"],
+               let logMessage = body["message"] {
+                let prefix = level == "error" ? "🔴 [JS Error]" : level == "warn" ? "🟡 [JS Warn]" : "🔵 [JS Log]"
+                print("\(prefix) \(logMessage)")
+            }
         }
 
         func loadHTML(in webView: WKWebView, fileName: String) {

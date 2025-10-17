@@ -174,6 +174,55 @@ struct PowderDemand: DashboardData, Codable {
     }
 }
 
+// MARK: - AC Oil Models
+
+struct ACContent: DashboardData, Codable {
+    let productNumberRef: String
+    let acContent: Double
+    let lastUpdated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case productNumberRef = "product_number_ref"
+        case acContent = "ac_content"
+        case lastUpdated = "last_updated"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        productNumberRef = try container.decode(String.self, forKey: .productNumberRef)
+        acContent = try container.decode(Double.self, forKey: .acContent)
+        lastUpdated = try container.decodeIfPresent(Date.self, forKey: .lastUpdated) ?? Date()
+    }
+}
+
+struct ACIncomingOrder: DashboardData, Codable {
+    let id: Int
+    let orderPlacedConfirmed: String?
+    let estimatedDeliveryDate: String
+    let enteredBy: String?
+    let notes: String?
+    let lastUpdated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case orderPlacedConfirmed = "order_placed_confirmed"
+        case estimatedDeliveryDate = "estimated_delivery_date"
+        case enteredBy = "entered_by"
+        case notes
+        case lastUpdated = "last_updated"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        orderPlacedConfirmed = try? container.decode(String.self, forKey: .orderPlacedConfirmed)
+        estimatedDeliveryDate = try container.decode(String.self, forKey: .estimatedDeliveryDate)
+        enteredBy = try? container.decode(String.self, forKey: .enteredBy)
+        notes = try? container.decode(String.self, forKey: .notes)
+        lastUpdated = try container.decodeIfPresent(Date.self, forKey: .lastUpdated) ?? Date()
+    }
+}
+
 // MARK: - Operations Models
 
 struct DriverSchedule: DashboardData, Codable {
@@ -218,6 +267,8 @@ struct DashboardDataSnapshot: Codable {
     let rawMaterialDemands: [RawMaterialDemand]?
     let powderDemand: [PowderDemand]?
     let driverSchedule: [DriverSchedule]?
+    let acContent: [ACContent]?
+    let acIncomingOrders: [ACIncomingOrder]?
     let fetchedAt: Date
 
     enum CodingKeys: String, CodingKey {
@@ -228,6 +279,8 @@ struct DashboardDataSnapshot: Codable {
         case rawMaterialDemands = "raw_material_demands"
         case powderDemand = "powder_demand"
         case driverSchedule = "driver_schedule"
+        case acContent = "ac_content"
+        case acIncomingOrders = "ac_incoming_orders"
         case fetchedAt = "fetched_at"
     }
 
@@ -239,6 +292,8 @@ struct DashboardDataSnapshot: Codable {
         rawMaterialDemands: [RawMaterialDemand]? = nil,
         powderDemand: [PowderDemand]? = nil,
         driverSchedule: [DriverSchedule]? = nil,
+        acContent: [ACContent]? = nil,
+        acIncomingOrders: [ACIncomingOrder]? = nil,
         fetchedAt: Date = Date()
     ) {
         self.chameleonInventory = chameleonInventory
@@ -248,6 +303,8 @@ struct DashboardDataSnapshot: Codable {
         self.rawMaterialDemands = rawMaterialDemands
         self.powderDemand = powderDemand
         self.driverSchedule = driverSchedule
+        self.acContent = acContent
+        self.acIncomingOrders = acIncomingOrders
         self.fetchedAt = fetchedAt
     }
 }
