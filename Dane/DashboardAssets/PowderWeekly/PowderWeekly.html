@@ -49,15 +49,14 @@
         );
 
         // ===== DATA FETCHING =====
-        async function fetchRawMaterialDemands() {
+        async function fetchPowderDemands() {
             try {
                 console.log('🔄 Fetching powder demand data from Supabase...');
 
                 const { data, error } = await supabaseClient
-                    .from('raw_material_demands')
+                    .from('powder_demand')
                     .select('*')
-                    .in('material_name', ['Cement', 'Flyash', 'Slag'])
-                    .order('demand_date', { ascending: true });
+                    .order('ship_date', { ascending: true });
 
                 if (error) throw error;
 
@@ -93,7 +92,7 @@
             return `${dayName} ${date.getMonth() + 1}/${date.getDate()}`;
         }
 
-        function processRawMaterialData(rawData) {
+        function processPowderData(rawData) {
             const dates = getNextFiveDays();
             const plants = ['PITTSBURG', 'BRENTWOOD'];
             const materials = ['Cement', 'Flyash', 'Slag'];
@@ -110,14 +109,14 @@
                 });
             });
 
-            // Aggregate data from raw results
+            // Aggregate data from powder_demand table
             rawData.forEach(item => {
-                const plantName = item.plant_name.toUpperCase();
+                const plantName = item.plant_id.toUpperCase();
                 const material = item.material_name;
-                const date = item.demand_date;
+                const date = item.ship_date;
 
                 if (plants.includes(plantName) && materials.includes(material) && dates.includes(date)) {
-                    plantData[plantName][material][date] += parseFloat(item.quantity_tons) || 0;
+                    plantData[plantName][material][date] += parseFloat(item.quantity) || 0;
                 }
             });
 
@@ -334,8 +333,8 @@
 
                         <div class="mt-8 p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow">
                             <p class="text-sm text-gray-700">
-                                <strong>Note:</strong> All quantities are displayed in tons. Raw material requirements are calculated
-                                based on concrete mix formulas and actual order quantities. Values include cement, flyash, and slag components only.
+                                <strong>Note:</strong> All quantities are displayed in tons. Data is sourced from the powder_demand table.
+                                Values include cement, flyash, and slag components only.
                             </p>
                         </div>
                     </div>
@@ -368,8 +367,8 @@
             console.log('📄 PowderWeekly dashboard loaded');
 
             try {
-                const rawData = await fetchRawMaterialDemands();
-                const processedData = processRawMaterialData(rawData);
+                const rawData = await fetchPowderDemands();
+                const processedData = processPowderData(rawData);
                 renderDashboard(processedData);
             } catch (error) {
                 showError('Failed to load powder demand data: ' + error.message);

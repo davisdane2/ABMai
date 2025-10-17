@@ -145,6 +145,35 @@ struct ConcreteDemand: DashboardData, Codable {
     }
 }
 
+// Powder Demand (Cement, Flyash, Slag)
+struct PowderDemand: DashboardData, Codable {
+    let id: String
+    let plantId: String
+    let materialName: String?
+    let shipDate: String?
+    let quantity: String?
+    let lastUpdated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case plantId = "plant_id"
+        case materialName = "material_name"
+        case shipDate = "ship_date"
+        case quantity
+        case lastUpdated = "last_updated"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        plantId = try container.decode(String.self, forKey: .plantId)
+        materialName = try? container.decode(String.self, forKey: .materialName)
+        shipDate = try? container.decode(String.self, forKey: .shipDate)
+        quantity = try? container.decode(String.self, forKey: .quantity)
+        lastUpdated = try container.decodeIfPresent(Date.self, forKey: .lastUpdated) ?? Date()
+    }
+}
+
 // MARK: - Operations Models
 
 struct DriverSchedule: DashboardData, Codable {
@@ -187,6 +216,7 @@ struct DashboardDataSnapshot: Codable {
     let concreteDemand: [ConcreteDemand]?
     let asphaltDemand: [AsphaltDemand]?
     let rawMaterialDemands: [RawMaterialDemand]?
+    let powderDemand: [PowderDemand]?
     let driverSchedule: [DriverSchedule]?
     let fetchedAt: Date
 
@@ -196,6 +226,7 @@ struct DashboardDataSnapshot: Codable {
         case concreteDemand = "concrete_demand"
         case asphaltDemand = "asphalt_demand"
         case rawMaterialDemands = "raw_material_demands"
+        case powderDemand = "powder_demand"
         case driverSchedule = "driver_schedule"
         case fetchedAt = "fetched_at"
     }
@@ -206,6 +237,7 @@ struct DashboardDataSnapshot: Codable {
         concreteDemand: [ConcreteDemand]? = nil,
         asphaltDemand: [AsphaltDemand]? = nil,
         rawMaterialDemands: [RawMaterialDemand]? = nil,
+        powderDemand: [PowderDemand]? = nil,
         driverSchedule: [DriverSchedule]? = nil,
         fetchedAt: Date = Date()
     ) {
@@ -214,6 +246,7 @@ struct DashboardDataSnapshot: Codable {
         self.concreteDemand = concreteDemand
         self.asphaltDemand = asphaltDemand
         self.rawMaterialDemands = rawMaterialDemands
+        self.powderDemand = powderDemand
         self.driverSchedule = driverSchedule
         self.fetchedAt = fetchedAt
     }

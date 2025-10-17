@@ -30,6 +30,7 @@ class DashboardDataManager: ObservableObject {
     @Published var concreteDemand: [ConcreteDemand] = []
     @Published var asphaltDemand: [AsphaltDemand] = []
     @Published var rawMaterialDemands: [RawMaterialDemand] = []
+    @Published var powderDemand: [PowderDemand] = []
     @Published var driverSchedule: [DriverSchedule] = []
 
     // MARK: - Configuration
@@ -128,6 +129,9 @@ class DashboardDataManager: ObservableObject {
         if let rawMaterials = snapshot.rawMaterialDemands {
             self.rawMaterialDemands = rawMaterials
         }
+        if let powder = snapshot.powderDemand {
+            self.powderDemand = powder
+        }
         if let schedule = snapshot.driverSchedule {
             self.driverSchedule = schedule
         }
@@ -141,6 +145,7 @@ class DashboardDataManager: ObservableObject {
            snapshot.concreteDemand == nil &&
            snapshot.asphaltDemand == nil &&
            snapshot.rawMaterialDemands == nil &&
+           snapshot.powderDemand == nil &&
            snapshot.driverSchedule == nil {
             print("⚠️ No data fetched, loading cached data")
             loadCachedData()
@@ -195,6 +200,9 @@ class DashboardDataManager: ObservableObject {
             if let rawMaterials = snapshot.rawMaterialDemands {
                 self.rawMaterialDemands = rawMaterials
             }
+            if let powder = snapshot.powderDemand {
+                self.powderDemand = powder
+            }
             if let schedule = snapshot.driverSchedule {
                 self.driverSchedule = schedule
             }
@@ -246,6 +254,10 @@ class DashboardDataManager: ObservableObject {
 
     func exportDriverScheduleJSON() -> String? {
         return encodeToJSON(driverSchedule)
+    }
+
+    func exportPowderDemandJSON() -> String? {
+        return encodeToJSON(powderDemand)
     }
 
     private func encodeToJSON<T: Encodable>(_ data: T) -> String? {

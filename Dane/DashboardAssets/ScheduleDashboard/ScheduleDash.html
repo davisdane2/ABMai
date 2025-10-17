@@ -175,6 +175,61 @@
             white-space: pre-wrap;
         }
 
+        .schedule-date-bar {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.2em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .schedule-date-bar .date-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .schedule-date-bar .date-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .nav-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .no-truck {
             color: #94a3b8;
             font-style: italic;
@@ -244,26 +299,33 @@
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Track current viewing date
+        let currentViewDate = null;
+        let allSchedules = [];
+
         // Check for centralized data from Swift
         function loadFromCentralizedData() {
             if (window.centralizedDashboardData && window.centralizedDashboardData.driver_schedule) {
                 console.log('✅ Using centralized driver schedule data');
-                const schedules = window.centralizedDashboardData.driver_schedule;
+                allSchedules = window.centralizedDashboardData.driver_schedule;
 
-                // Filter for today's active schedules
-                const today = new Date().toISOString().split('T')[0];
-                const todaySchedules = schedules.filter(s =>
-                    s.schedule_date === today &&
+                // Get the most recent schedule_date
+                const latestDate = getMostRecentScheduleDate(allSchedules);
+                currentViewDate = latestDate;
+
+                // Filter for the latest date's active schedules
+                const filteredSchedules = allSchedules.filter(s =>
+                    s.schedule_date === latestDate &&
                     s.active === true &&
                     s.status === 'scheduled'
                 );
 
-                displaySchedule(todaySchedules);
-
-                // Get fetched_at timestamp from the first schedule (all have same timestamp)
-                const fetchedAt = schedules.length > 0 && schedules[0].fetched_at
-                    ? schedules[0].fetched_at
+                // Get fetched_at timestamp from the first schedule
+                const fetchedAt = allSchedules.length > 0 && allSchedules[0].fetched_at
+                    ? allSchedules[0].fetched_at
                     : null;
+
+                displaySchedule(filteredSchedules, latestDate);
                 updateLastUpdated(fetchedAt);
                 return true;
             }
@@ -280,24 +342,32 @@
             // Fallback to direct API call
             console.log('⚠️ Centralized data not available, fetching from Supabase...');
             try {
-                const today = new Date().toISOString().split('T')[0];
-
-                // Fetch today's schedules
+                // Fetch all recent schedules (last 7 days)
                 const { data, error } = await supabase
                     .from('driver_schedules')
                     .select('driver_name, start_time, work_point, truck_name, raw_data, status, schedule_date, active, fetched_at')
-                    .eq('schedule_date', today)
                     .eq('active', true)
                     .eq('status', 'scheduled')
+                    .order('schedule_date', { ascending: false })
                     .order('work_point', { ascending: true })
-                    .order('start_time', { ascending: true });
+                    .order('start_time', { ascending: true })
+                    .limit(200);
 
                 if (error) throw error;
 
-                displaySchedule(data);
+                allSchedules = data;
+
+                // Get the most recent schedule_date
+                const latestDate = getMostRecentScheduleDate(data);
+                currentViewDate = latestDate;
+
+                // Filter for latest date
+                const filteredSchedules = data.filter(s => s.schedule_date === latestDate);
 
                 // Get fetched_at from first record
                 const fetchedAt = data && data.length > 0 ? data[0].fetched_at : null;
+
+                displaySchedule(filteredSchedules, latestDate);
                 updateLastUpdated(fetchedAt);
             } catch (error) {
                 console.error('❌ Error loading schedule:', error);
@@ -309,21 +379,104 @@
             }
         }
 
+        // Helper function to get most recent schedule_date
+        function getMostRecentScheduleDate(schedules) {
+            if (!schedules || schedules.length === 0) return null;
+
+            const dates = schedules
+                .map(s => s.schedule_date)
+                .filter(d => d) // Remove null/undefined
+                .sort()
+                .reverse();
+
+            return dates.length > 0 ? dates[0] : null;
+        }
+
+        // Navigate to previous day's schedule
+        function loadPreviousDay() {
+            if (!currentViewDate || allSchedules.length === 0) return;
+
+            // Get all unique dates
+            const uniqueDates = [...new Set(allSchedules.map(s => s.schedule_date))]
+                .filter(d => d)
+                .sort()
+                .reverse();
+
+            // Find current date index
+            const currentIndex = uniqueDates.indexOf(currentViewDate);
+
+            // Get previous date (next in array since reversed)
+            if (currentIndex < uniqueDates.length - 1) {
+                const previousDate = uniqueDates[currentIndex + 1];
+                currentViewDate = previousDate;
+
+                // Filter schedules for previous date
+                const filteredSchedules = allSchedules.filter(s =>
+                    s.schedule_date === previousDate &&
+                    s.active === true &&
+                    s.status === 'scheduled'
+                );
+
+                displaySchedule(filteredSchedules, previousDate);
+            }
+        }
+
+        // Navigate to next day's schedule (back toward most recent)
+        function loadNextDay() {
+            if (!currentViewDate || allSchedules.length === 0) return;
+
+            // Get all unique dates
+            const uniqueDates = [...new Set(allSchedules.map(s => s.schedule_date))]
+                .filter(d => d)
+                .sort()
+                .reverse();
+
+            // Find current date index
+            const currentIndex = uniqueDates.indexOf(currentViewDate);
+
+            // Get next date (previous in array since reversed)
+            if (currentIndex > 0) {
+                const nextDate = uniqueDates[currentIndex - 1];
+                currentViewDate = nextDate;
+
+                // Filter schedules for next date
+                const filteredSchedules = allSchedules.filter(s =>
+                    s.schedule_date === nextDate &&
+                    s.active === true &&
+                    s.status === 'scheduled'
+                );
+
+                displaySchedule(filteredSchedules, nextDate);
+            }
+        }
+
         // Listen for centralized data updates
         window.addEventListener('dashboardDataUpdated', (event) => {
             console.log('📦 Received centralized data update');
             loadFromCentralizedData();
         });
 
-        function displaySchedule(schedules) {
+        function displaySchedule(schedules, scheduleDate) {
             if (!schedules || schedules.length === 0) {
                 document.getElementById('dashboard').innerHTML = `
                     <div class="schedule-section">
-                        <div class="no-data">No schedules found for today</div>
+                        <div class="no-data">No schedules found for this date</div>
                     </div>
                 `;
                 return;
             }
+
+            // Format the schedule date
+            const formattedDate = formatScheduleDate(new Date(scheduleDate + 'T00:00:00'));
+
+            // Check if we can navigate
+            const uniqueDates = [...new Set(allSchedules.map(s => s.schedule_date))]
+                .filter(d => d)
+                .sort()
+                .reverse();
+            const currentIndex = uniqueDates.indexOf(scheduleDate);
+            const canGoPrevious = currentIndex < uniqueDates.length - 1;
+            const canGoNext = currentIndex > 0;
 
             // Sort schedules by work point, then by start time
             const workPointOrder = ['Mixer', 'Bottoms', 'Utility', 'Asphalt', 'Brentwood', 'Yard', 'Dispatch', 'Shop', 'Office', 'Unassigned'];
@@ -354,8 +507,22 @@
                 return timeA.localeCompare(timeB);
             });
 
-            // Build single table HTML
+            // Build HTML with date bar and navigation
             const html = `
+                <div class="schedule-date-bar">
+                    <div class="date-info">
+                        <span class="date-label">Schedule For:</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="nav-button" onclick="loadPreviousDay()" ${!canGoPrevious ? 'disabled' : ''}>
+                            ← Previous Day
+                        </button>
+                        <button class="nav-button" onclick="loadNextDay()" ${!canGoNext ? 'disabled' : ''}>
+                            Next Day →
+                        </button>
+                    </div>
+                </div>
                 <div class="schedule-section">
                     <table class="schedule-table">
                         <thead>
@@ -402,6 +569,16 @@
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
+            });
+        }
+
+        function formatScheduleDate(date) {
+            return date.toLocaleDateString('en-US', {
+                timeZone: 'America/Los_Angeles',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
         }
 

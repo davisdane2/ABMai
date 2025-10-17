@@ -230,7 +230,7 @@ struct DashboardListItemView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "sparkles")
                         .font(.system(size: 10, weight: .bold))
-                    Text("NEW")
+                    Text("UPDATED")
                         .font(.system(size: 10, weight: .bold))
                 }
                 .foregroundColor(.white)

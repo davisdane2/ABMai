@@ -152,6 +152,11 @@ class SupabaseClient {
         return try await fetch(endpoint: "driver_schedule", query: query)
     }
 
+    /// Fetch powder demand (cement, flyash, slag)
+    func fetchPowderDemand() async throws -> [PowderDemand] {
+        return try await fetch(endpoint: "powder_demand", query: "?select=*&order=ship_date.asc")
+    }
+
     // MARK: - Batch Fetch (Parallel)
 
     /// Fetch all dashboard data in parallel for maximum efficiency
@@ -162,6 +167,7 @@ class SupabaseClient {
         async let concrete = try? fetchConcreteDemand()
         async let asphalt = try? fetchAsphaltDemand()
         async let rawMaterials = try? fetchRawMaterialDemands()
+        async let powder = try? fetchPowderDemand()
         async let schedule = try? fetchDriverSchedule()
 
         return DashboardDataSnapshot(
@@ -170,6 +176,7 @@ class SupabaseClient {
             concreteDemand: await concrete,
             asphaltDemand: await asphalt,
             rawMaterialDemands: await rawMaterials,
+            powderDemand: await powder,
             driverSchedule: await schedule,
             fetchedAt: Date()
         )

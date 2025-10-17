@@ -89,12 +89,37 @@
 
             const organizeData = () => {
                 const dates = [...new Set(data.map(d => d.demand_date))].sort();
-                
-                const plants = {
-                    'Brentwood': { category: 'Concrete', materials: ['Concrete Sand', '1x4 Crush Rock', 'Peagravel'] },
-                    'Pittsburg': { category: 'Concrete', materials: ['Concrete Sand', '1x4 Crush Rock', 'Peagravel'] },
-                    'Asphalt Plant': { category: 'Asphalt', materials: ['Dust', 'Man Sand', '3/8', '1/2', '3/4'] }
+
+                // Target materials we care about (aggregates only)
+                const targetMaterials = {
+                    'Concrete': ['Concrete Sand', '1x4 Crush Rock', 'Peagravel', 'Pea Gravel'],
+                    'Asphalt': ['Dust', 'Man Sand', '3/8', '1/2', '3/4']
                 };
+
+                // Dynamically build plants object from actual data
+                const plants = {};
+
+                data.forEach(record => {
+                    const plantName = record.plant_name;
+                    const materialName = record.material_name;
+                    const category = record.material_category.includes('Asphalt') ? 'Asphalt' : 'Concrete';
+
+                    // Only include materials from our target list
+                    if (targetMaterials[category]?.includes(materialName)) {
+                        if (!plants[plantName]) {
+                            plants[plantName] = {
+                                category: category,
+                                materials: new Set()
+                            };
+                        }
+                        plants[plantName].materials.add(materialName);
+                    }
+                });
+
+                // Convert Sets to sorted arrays
+                Object.keys(plants).forEach(plantName => {
+                    plants[plantName].materials = Array.from(plants[plantName].materials).sort();
+                });
 
                 return { dates, plants };
             };
@@ -309,9 +334,12 @@
                             <div className="font-bold text-gray-800 mb-2">📝 Notes:</div>
                             <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                                 <li>All quantities shown in TONS</li>
+                                <li><strong>Aggregate materials only:</strong> Concrete Sand, 1x4 Crush Rock, Pea Gravel (concrete plants)</li>
+                                <li><strong>Asphalt materials:</strong> Dust, Man Sand, 3/8, 1/2, 3/4 (asphalt plant)</li>
+                                <li>Powder materials (cement, flyash, slag) tracked separately in "Powder Demand" dashboard</li>
                                 <li>Concrete raw materials calculated from mix recipes (lbs/CY converted to tons)</li>
                                 <li>Asphalt raw materials calculated after removing RAP content from total tonnage</li>
-                                <li>Daily totals represent sum of all raw materials for that plant/day</li>
+                                <li>Daily totals represent sum of all displayed materials for that plant/day</li>
                                 <li>Data refreshes automatically from Supabase database</li>
                             </ul>
                         </div>

@@ -113,7 +113,7 @@ extension Dashboard {
             icon: "dflogo.png",
             htmlPath: "ScheduleDash.html",
             category: .operations,
-            recentlyUpdatedInVersion: "1.42"
+            recentlyUpdatedInVersion: "1.50"
         ),
 
         // AI Tools

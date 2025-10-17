@@ -276,7 +276,7 @@
             const { data, error } = await supabaseClient
                 .from('ac_incoming_orders')
                 .select('*')
-                .order('expected_delivery_date', { ascending: true });
+                .order('estimated_delivery_date', { ascending: true });
 
             if (error) throw error;
             return data || [];
